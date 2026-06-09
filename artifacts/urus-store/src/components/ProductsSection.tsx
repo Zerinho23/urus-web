@@ -66,6 +66,7 @@ const products = [
     badge: "PC",
     badgeBg: "#06b6d4",
     icon: <Monitor className="h-9 w-9" />,
+    image: "/emulador-competitivo.png",
     features: ["Optimizado para emulador", "Sin detección en PC", "Alta FPS estable"],
     tagline: "Para jugadores de escritorio",
   },
