@@ -16,9 +16,13 @@ interface CartContextValue {
   open: boolean;
   setOpen: (v: boolean) => void;
   addItem: (product: Omit<CartItem, "quantity">) => void;
-  removeItem: (id: number) => void;
-  updateQty: (id: number, qty: number) => void;
+  removeItem: (key: string) => void;
+  updateQty: (key: string, qty: number) => void;
   clearCart: () => void;
+}
+
+function itemKey(item: Pick<CartItem, "id" | "name">) {
+  return `${item.id}__${item.name}`;
 }
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -28,21 +32,22 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
 
   const addItem = useCallback((product: Omit<CartItem, "quantity">) => {
+    const key = itemKey(product);
     setItems((prev) => {
-      const existing = prev.find((i) => i.id === product.id);
-      if (existing) return prev.map((i) => i.id === product.id ? { ...i, quantity: i.quantity + 1 } : i);
+      const existing = prev.find((i) => itemKey(i) === key);
+      if (existing) return prev.map((i) => itemKey(i) === key ? { ...i, quantity: i.quantity + 1 } : i);
       return [...prev, { ...product, quantity: 1 }];
     });
     setOpen(true);
   }, []);
 
-  const removeItem = useCallback((id: number) => {
-    setItems((prev) => prev.filter((i) => i.id !== id));
+  const removeItem = useCallback((key: string) => {
+    setItems((prev) => prev.filter((i) => itemKey(i) !== key));
   }, []);
 
-  const updateQty = useCallback((id: number, qty: number) => {
-    if (qty < 1) { removeItem(id); return; }
-    setItems((prev) => prev.map((i) => i.id === id ? { ...i, quantity: qty } : i));
+  const updateQty = useCallback((key: string, qty: number) => {
+    if (qty < 1) { removeItem(key); return; }
+    setItems((prev) => prev.map((i) => itemKey(i) === key ? { ...i, quantity: qty } : i));
   }, [removeItem]);
 
   const clearCart = useCallback(() => setItems([]), []);
@@ -62,3 +67,5 @@ export function useCart() {
   if (!ctx) throw new Error("useCart must be used within CartProvider");
   return ctx;
 }
+
+export { itemKey };
