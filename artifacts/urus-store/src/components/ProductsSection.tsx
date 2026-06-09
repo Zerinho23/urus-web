@@ -150,12 +150,13 @@ const products = [
     game: "Free Fire iOS",
     category: "freefire" as const,
     price: 9.99,
-    accentColor: "#38bdf8",
-    gradientFrom: "#001520",
+    accentColor: "#a855f7",
+    gradientFrom: "#150025",
     gradientTo: "#0a0b0f",
     badge: "iOS",
-    badgeBg: "linear-gradient(135deg,#38bdf8,#0284c7)",
+    badgeBg: "linear-gradient(135deg,#a855f7,#ec4899)",
     icon: <Smartphone className="h-9 w-9" />,
+    image: "/panel-ios.png",
     features: ["Sin jailbreak requerido", "Aimbot suave", "ESP incluido"],
     tagline: "Exclusivo para iPhone/iPad",
   },
@@ -206,6 +207,7 @@ function ProductCard({ product }: { product: typeof products[0] }) {
   const { addItem } = useCart();
   const c = product.accentColor;
   const glow = hexToRgba(c, 0.25);
+  const hasImage = "image" in product && product.image;
 
   const handleAdd = () => {
     addItem({ id: product.id, name: product.name, game: product.game, price: product.price, accentColor: c });
@@ -231,7 +233,7 @@ function ProductCard({ product }: { product: typeof products[0] }) {
       {/* Top accent line */}
       <div
         className="absolute top-0 left-0 right-0 h-[3px] z-10"
-        style={{ background: c.startsWith("linear") ? c : c, boxShadow: `0 0 10px ${hexToRgba(c, 0.7)}` }}
+        style={{ background: c, boxShadow: `0 0 10px ${hexToRgba(c, 0.7)}` }}
       />
 
       {/* Image / hero area */}
@@ -242,37 +244,66 @@ function ProductCard({ product }: { product: typeof products[0] }) {
           background: `linear-gradient(160deg, ${product.gradientFrom} 0%, ${product.gradientTo} 100%)`,
         }}
       >
-        {/* Diagonal stripes */}
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `repeating-linear-gradient(
-              -45deg,
-              ${hexToRgba(c, 0.04)} 0px,
-              ${hexToRgba(c, 0.04)} 1px,
-              transparent 1px,
-              transparent 18px
-            )`,
-          }}
-        />
-        {/* Glow orb */}
-        <div
-          className="absolute rounded-full blur-3xl pointer-events-none"
-          style={{
-            width: 180, height: 180,
-            top: "50%", left: "50%",
-            transform: "translate(-50%, -50%)",
-            background: `radial-gradient(circle, ${hexToRgba(c, 0.28)} 0%, transparent 70%)`,
-            opacity: hovered ? 1 : 0.6,
-            transition: "opacity 0.3s",
-          }}
-        />
+        {hasImage ? (
+          /* Real product image */
+          <>
+            <img
+              src={(product as typeof products[0] & { image: string }).image}
+              alt={product.name}
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{
+                transform: hovered ? "scale(1.06)" : "scale(1)",
+                transition: "transform 0.4s ease",
+              }}
+            />
+            {/* Darken overlay for text legibility */}
+            <div className="absolute inset-0" style={{ background: "linear-gradient(to top, #0a0b0f 0%, rgba(0,0,0,0.2) 60%, transparent 100%)" }} />
+            <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${hexToRgba(c, 0.12)} 0%, transparent 60%)` }} />
+          </>
+        ) : (
+          /* Generic icon area */
+          <>
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `repeating-linear-gradient(-45deg, ${hexToRgba(c, 0.04)} 0px, ${hexToRgba(c, 0.04)} 1px, transparent 1px, transparent 18px)`,
+              }}
+            />
+            <div
+              className="absolute rounded-full blur-3xl pointer-events-none"
+              style={{
+                width: 180, height: 180,
+                top: "50%", left: "50%",
+                transform: "translate(-50%, -50%)",
+                background: `radial-gradient(circle, ${hexToRgba(c, 0.28)} 0%, transparent 70%)`,
+                opacity: hovered ? 1 : 0.6,
+                transition: "opacity 0.3s",
+              }}
+            />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div
+                className="flex items-center justify-center rounded-2xl"
+                style={{
+                  width: 64, height: 64,
+                  background: hexToRgba(c, 0.1),
+                  border: `1.5px solid ${hexToRgba(c, 0.3)}`,
+                  color: c,
+                  transform: hovered ? "scale(1.12) rotate(5deg)" : "scale(1)",
+                  transition: "transform 0.3s ease",
+                  boxShadow: hovered ? `0 0 20px ${hexToRgba(c, 0.5)}` : "none",
+                }}
+              >
+                {product.icon}
+              </div>
+            </div>
+          </>
+        )}
 
         {/* Game tag */}
         <div className="absolute top-3 left-3 z-10">
           <span
             className="text-[9px] font-extrabold uppercase tracking-[0.18em] px-2 py-1 rounded-md"
-            style={{ background: hexToRgba(c, 0.15), border: `1px solid ${hexToRgba(c, 0.3)}`, color: c }}
+            style={{ background: "rgba(0,0,0,0.6)", border: `1px solid ${hexToRgba(c, 0.4)}`, color: c, backdropFilter: "blur(4px)" }}
           >
             {product.game}
           </span>
@@ -288,29 +319,11 @@ function ProductCard({ product }: { product: typeof products[0] }) {
           </span>
         </div>
 
-        {/* Center icon */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div
-            className="flex items-center justify-center rounded-2xl"
-            style={{
-              width: 64, height: 64,
-              background: hexToRgba(c, 0.1),
-              border: `1.5px solid ${hexToRgba(c, 0.3)}`,
-              color: c,
-              transform: hovered ? "scale(1.12) rotate(5deg)" : "scale(1)",
-              transition: "transform 0.3s ease",
-              boxShadow: hovered ? `0 0 20px ${hexToRgba(c, 0.5)}` : "none",
-            }}
-          >
-            {product.icon}
-          </div>
-        </div>
-
         {/* Active status */}
         <div className="absolute bottom-3 left-3 z-10">
           <span
             className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold"
-            style={{ background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.3)", color: "#4ade80" }}
+            style={{ background: "rgba(34,197,94,0.15)", border: "1px solid rgba(34,197,94,0.35)", color: "#4ade80", backdropFilter: "blur(4px)" }}
           >
             <span className="w-1.5 h-1.5 rounded-full bg-green-400" style={{ animation: "pulse-dot 2s ease-in-out infinite" }} />
             ACTIVO
@@ -324,7 +337,9 @@ function ProductCard({ product }: { product: typeof products[0] }) {
           ))}
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 h-8" style={{ background: "linear-gradient(to top, #0a0b0f, transparent)" }} />
+        {!hasImage && (
+          <div className="absolute bottom-0 left-0 right-0 h-8" style={{ background: "linear-gradient(to top, #0a0b0f, transparent)" }} />
+        )}
       </div>
 
       {/* Content */}
