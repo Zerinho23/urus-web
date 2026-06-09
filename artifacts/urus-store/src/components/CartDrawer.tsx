@@ -13,21 +13,17 @@ export default function CartDrawer() {
   if (!open) return null;
 
   const handleCheckout = () => {
-    const itemList = items.map((i) => `${i.name} x${i.quantity} ($${(i.price * i.quantity).toFixed(2)})`).join(", ");
-    const msg = encodeURIComponent(`Hola, quiero comprar: ${itemList}. Total: $${total.toFixed(2)}`);
     window.open(`https://discord.gg/urus`, "_blank");
   };
 
   return (
     <>
-      {/* Backdrop */}
       <div
         className="fixed inset-0 z-[100010] transition-opacity duration-300"
         style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(4px)" }}
         onClick={() => setOpen(false)}
       />
 
-      {/* Drawer */}
       <div
         className="fixed right-0 top-0 h-full z-[100011] flex flex-col"
         style={{
@@ -38,7 +34,6 @@ export default function CartDrawer() {
           animation: "slideInRight 0.3s ease-out",
         }}
       >
-        {/* Header */}
         <div className="flex items-center justify-between p-5 border-b" style={{ borderColor: "rgba(255,255,255,0.07)" }}>
           <div className="flex items-center gap-3">
             <ShoppingCart className="h-5 w-5 text-yellow-400" />
@@ -64,7 +59,6 @@ export default function CartDrawer() {
           </div>
         </div>
 
-        {/* Items */}
         <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-3">
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full gap-4 text-center">
@@ -85,7 +79,6 @@ export default function CartDrawer() {
                 className="flex items-center gap-3 p-3 rounded-xl"
                 style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}
               >
-                {/* Color indicator */}
                 <div className="w-10 h-10 rounded-lg flex items-center justify-center text-xs font-extrabold text-black shrink-0"
                   style={{ background: item.accentColor }}>
                   {item.name[0]}
@@ -125,7 +118,6 @@ export default function CartDrawer() {
           )}
         </div>
 
-        {/* Footer */}
         {items.length > 0 && (
           <div className="p-5 border-t flex flex-col gap-3" style={{ borderColor: "rgba(255,255,255,0.07)" }}>
             <div className="flex justify-between items-center">
