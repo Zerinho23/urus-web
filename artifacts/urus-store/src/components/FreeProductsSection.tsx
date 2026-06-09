@@ -42,12 +42,7 @@ function TimerBox({ value, label }: { value: string; label: string }) {
 
 function Colon() {
   return (
-    <span
-      className="text-3xl font-extrabold pb-6 select-none"
-      style={{ color: "rgba(251,191,36,0.5)" }}
-    >
-      :
-    </span>
+    <span className="text-3xl font-extrabold pb-6 select-none" style={{ color: "rgba(251,191,36,0.5)" }}>:</span>
   );
 }
 
@@ -92,14 +87,10 @@ function FreeCard({ product }: { product: typeof freeProducts[0] }) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {/* Image area */}
       <div
         className="relative h-52 overflow-hidden"
-        style={{
-          background: `linear-gradient(135deg, ${product.bgFrom}, rgba(7,8,11,0.95))`,
-        }}
+        style={{ background: `linear-gradient(135deg, ${product.bgFrom}, rgba(7,8,11,0.95))` }}
       >
-        {/* Grid pattern overlay */}
         <div
           className="absolute inset-0"
           style={{
@@ -107,14 +98,8 @@ function FreeCard({ product }: { product: typeof freeProducts[0] }) {
             backgroundSize: "24px 24px",
           }}
         />
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-48 h-32 rounded-full blur-3xl" style={{ background: "rgba(251,191,36,0.12)" }} />
 
-        {/* Glow orb */}
-        <div
-          className="absolute bottom-0 left-1/2 -translate-x-1/2 w-48 h-32 rounded-full blur-3xl"
-          style={{ background: "rgba(251,191,36,0.12)" }}
-        />
-
-        {/* Top badges */}
         <div className="absolute top-3 left-3 flex items-center gap-1.5 z-10 flex-wrap">
           <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold"
             style={{ background: "rgba(34,197,94,0.2)", border: "1px solid rgba(34,197,94,0.4)", color: "#4ade80" }}>
@@ -134,17 +119,11 @@ function FreeCard({ product }: { product: typeof freeProducts[0] }) {
           </span>
         </div>
 
-        {/* Game name */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center z-10">
           <p className="text-[10px] font-bold tracking-[0.3em] text-white/30 uppercase mb-1">{product.game}</p>
           <div
             className="px-5 py-2 rounded text-xl font-extrabold tracking-widest"
-            style={{
-              background: "rgba(255,255,255,0.92)",
-              color: "#000",
-              letterSpacing: "0.1em",
-              boxShadow: "0 2px 12px rgba(0,0,0,0.5)",
-            }}
+            style={{ background: "rgba(255,255,255,0.92)", color: "#000", letterSpacing: "0.1em", boxShadow: "0 2px 12px rgba(0,0,0,0.5)" }}
           >
             {product.shortName}
           </div>
@@ -158,12 +137,9 @@ function FreeCard({ product }: { product: typeof freeProducts[0] }) {
         <div className="absolute inset-0 bg-gradient-to-t from-[#07080b] via-[#07080b]/30 to-transparent" />
       </div>
 
-      {/* Content */}
       <div className="flex flex-col flex-1 p-5 gap-4">
         <div>
-          <h3 className="font-extrabold text-base uppercase tracking-wide text-white">
-            {product.name}
-          </h3>
+          <h3 className="font-extrabold text-base uppercase tracking-wide text-white">{product.name}</h3>
           <p className="text-white/40 text-xs mt-1 leading-relaxed">{product.description}</p>
         </div>
 
@@ -183,10 +159,7 @@ function FreeCard({ product }: { product: typeof freeProducts[0] }) {
           </div>
           <button
             className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-extrabold text-black transition-all duration-200 hover:scale-105 active:scale-95"
-            style={{
-              background: "linear-gradient(135deg, #fbbf24, #f59e0b)",
-              boxShadow: "0 0 16px rgba(251,191,36,0.35)",
-            }}
+            style={{ background: "linear-gradient(135deg, #fbbf24, #f59e0b)", boxShadow: "0 0 16px rgba(251,191,36,0.35)" }}
           >
             <Gift className="h-3 w-3" />
             Obtener →
@@ -219,31 +192,21 @@ export default function FreeProductsSection() {
 
   return (
     <section id="free-products" className="py-16 px-4 md:px-[10%]">
-      {/* Header */}
       <div className="flex flex-col items-center text-center gap-4 mb-10">
         <span
           className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest"
-          style={{
-            background: "rgba(251,191,36,0.1)",
-            border: "1px solid rgba(251,191,36,0.3)",
-            color: "#fbbf24",
-          }}
+          style={{ background: "rgba(251,191,36,0.1)", border: "1px solid rgba(251,191,36,0.3)", color: "#fbbf24" }}
         >
           <Gift className="h-3.5 w-3.5" />
           Productos Gratuitos
         </span>
         <h2 className="text-4xl md:text-5xl font-extrabold text-white leading-tight">
           Prueba{" "}
-          <span style={{ color: "#fbbf24", textShadow: "0 0 24px rgba(251,191,36,0.4)" }}>
-            Gratis
-          </span>
+          <span style={{ color: "#fbbf24", textShadow: "0 0 24px rgba(251,191,36,0.4)" }}>Gratis</span>
         </h2>
-        <p className="text-white/50 text-sm max-w-md">
-          Empieza sin pagar nada — 3 días de prueba completamente gratis.
-        </p>
+        <p className="text-white/50 text-sm max-w-md">Empieza sin pagar nada — 3 días de prueba completamente gratis.</p>
       </div>
 
-      {/* Countdown timer card */}
       <div className="max-w-xl mx-auto mb-10">
         <div
           className="rounded-2xl px-6 py-7 flex flex-col items-center gap-5"
@@ -275,22 +238,16 @@ export default function FreeProductsSection() {
         </div>
       </div>
 
-      {/* Free product cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-2xl mx-auto">
         {freeProducts.map((p) => (
           <FreeCard key={p.id} product={p} />
         ))}
       </div>
 
-      {/* Bottom CTA */}
       <div className="flex justify-center mt-10">
         <button
           className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold transition-all duration-200 hover:scale-105 active:scale-95"
-          style={{
-            background: "rgba(251,191,36,0.06)",
-            border: "1px solid rgba(251,191,36,0.25)",
-            color: "#fbbf24",
-          }}
+          style={{ background: "rgba(251,191,36,0.06)", border: "1px solid rgba(251,191,36,0.25)", color: "#fbbf24" }}
           onMouseEnter={(e) => {
             (e.currentTarget as HTMLButtonElement).style.background = "rgba(251,191,36,0.12)";
             (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(251,191,36,0.5)";
