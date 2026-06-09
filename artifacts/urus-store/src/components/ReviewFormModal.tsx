@@ -88,7 +88,6 @@ export default function ReviewFormModal({ onClose }: Props) {
             </div>
           ) : (
             <>
-              {/* Header */}
               <div className="flex items-center justify-between p-5 border-b" style={{ borderColor: "rgba(255,255,255,0.07)" }}>
                 <h3 className="text-white font-bold text-lg">Escribir reseña</h3>
                 <button
@@ -99,9 +98,7 @@ export default function ReviewFormModal({ onClose }: Props) {
                 </button>
               </div>
 
-              {/* Form */}
               <form onSubmit={handleSubmit} className="p-5 flex flex-col gap-4">
-                {/* Rating */}
                 <div>
                   <label className="text-white/60 text-xs uppercase tracking-wider mb-2 block">Puntuación *</label>
                   <div className="flex items-center gap-1">
@@ -125,7 +122,6 @@ export default function ReviewFormModal({ onClose }: Props) {
                   </div>
                 </div>
 
-                {/* Name */}
                 <div>
                   <label className="text-white/60 text-xs uppercase tracking-wider mb-1.5 block">Tu nombre *</label>
                   <input
@@ -135,16 +131,12 @@ export default function ReviewFormModal({ onClose }: Props) {
                     onChange={(e) => set("discordDisplayName", e.target.value)}
                     maxLength={64}
                     className="w-full px-4 py-2.5 rounded-xl text-sm text-white placeholder-white/25 outline-none transition-all"
-                    style={{
-                      background: "rgba(255,255,255,0.05)",
-                      border: "1px solid rgba(255,255,255,0.1)",
-                    }}
+                    style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }}
                     onFocus={(e) => { e.currentTarget.style.borderColor = "rgba(6,182,212,0.5)"; }}
                     onBlur={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; }}
                   />
                 </div>
 
-                {/* Discord username */}
                 <div>
                   <label className="text-white/60 text-xs uppercase tracking-wider mb-1.5 block">Usuario de Discord <span className="text-white/30 normal-case">(opcional)</span></label>
                   <input
@@ -154,26 +146,19 @@ export default function ReviewFormModal({ onClose }: Props) {
                     onChange={(e) => set("discordUsername", e.target.value)}
                     maxLength={64}
                     className="w-full px-4 py-2.5 rounded-xl text-sm text-white placeholder-white/25 outline-none transition-all"
-                    style={{
-                      background: "rgba(255,255,255,0.05)",
-                      border: "1px solid rgba(255,255,255,0.1)",
-                    }}
+                    style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }}
                     onFocus={(e) => { e.currentTarget.style.borderColor = "rgba(6,182,212,0.5)"; }}
                     onBlur={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; }}
                   />
                 </div>
 
-                {/* Product */}
                 <div>
                   <label className="text-white/60 text-xs uppercase tracking-wider mb-1.5 block">Producto <span className="text-white/30 normal-case">(opcional)</span></label>
                   <select
                     value={form.product}
                     onChange={(e) => set("product", e.target.value)}
                     className="w-full px-4 py-2.5 rounded-xl text-sm text-white outline-none transition-all appearance-none cursor-pointer"
-                    style={{
-                      background: "rgba(255,255,255,0.05)",
-                      border: "1px solid rgba(255,255,255,0.1)",
-                    }}
+                    style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }}
                     onFocus={(e) => { e.currentTarget.style.borderColor = "rgba(6,182,212,0.5)"; }}
                     onBlur={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; }}
                   >
@@ -184,7 +169,6 @@ export default function ReviewFormModal({ onClose }: Props) {
                   </select>
                 </div>
 
-                {/* Review text */}
                 <div>
                   <label className="text-white/60 text-xs uppercase tracking-wider mb-1.5 block">Tu reseña *</label>
                   <textarea
@@ -194,10 +178,7 @@ export default function ReviewFormModal({ onClose }: Props) {
                     maxLength={1000}
                     rows={4}
                     className="w-full px-4 py-2.5 rounded-xl text-sm text-white placeholder-white/25 outline-none transition-all resize-none"
-                    style={{
-                      background: "rgba(255,255,255,0.05)",
-                      border: "1px solid rgba(255,255,255,0.1)",
-                    }}
+                    style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }}
                     onFocus={(e) => { e.currentTarget.style.borderColor = "rgba(6,182,212,0.5)"; }}
                     onBlur={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; }}
                   />
@@ -212,10 +193,7 @@ export default function ReviewFormModal({ onClose }: Props) {
                   type="submit"
                   disabled={loading}
                   className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-white transition-all hover:scale-[1.02] active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed"
-                  style={{
-                    background: "linear-gradient(135deg, #06b6d4, #0891b2)",
-                    boxShadow: "0 0 20px rgba(6,182,212,0.3)",
-                  }}
+                  style={{ background: "linear-gradient(135deg, #06b6d4, #0891b2)", boxShadow: "0 0 20px rgba(6,182,212,0.3)" }}
                 >
                   {loading ? (
                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
