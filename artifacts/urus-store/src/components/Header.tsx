@@ -58,12 +58,11 @@ export default function Header() {
     >
       <div className="flex justify-between items-center h-20 px-4 md:px-[10%]">
         <button className="flex items-center gap-2" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-          <div
-            className="h-8 w-8 rounded-lg flex items-center justify-center font-extrabold text-black text-sm"
-            style={{ background: "linear-gradient(135deg, #06b6d4, #0891b2)" }}
-          >
-            U
-          </div>
+          <img
+            src="/logo.png"
+            alt="Urus Cheats"
+            className="h-10 w-10 rounded-lg object-cover"
+          />
           <span className="text-white font-bold hidden sm:block" style={{ fontSize: "1.5rem" }}>
             Urus Store
           </span>
