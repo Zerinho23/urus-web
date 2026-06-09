@@ -25,7 +25,6 @@ const FALLBACK_REVIEWS: Review[] = [
 
 const AVATAR_COLORS = ["#3b82f6","#8b5cf6","#ef4444","#f97316","#22c55e","#06b6d4","#ec4899","#eab308"];
 function getColor(s: string) { let h = 0; for (const c of s) h = c.charCodeAt(0) + ((h << 5) - h); return AVATAR_COLORS[Math.abs(h) % AVATAR_COLORS.length]; }
-function initials(s: string) { return s.slice(0, 2).toUpperCase(); }
 function fmtDate(iso: string) { const d = new Date(iso); return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`; }
 function fmtContent(raw: string) {
   return raw.replace(/\*\*(.+?)\*\*/g, "<strong class='text-white/90'>$1</strong>");
@@ -45,7 +44,7 @@ function ReviewCard({ review }: { review: Review }) {
           ) : (
             <div className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-extrabold shrink-0"
               style={{ background: color }}>
-              {initials(review.discordDisplayName)}
+              {review.discordDisplayName.slice(0, 2).toUpperCase()}
             </div>
           )}
           <div>
@@ -166,11 +165,7 @@ export default function ReviewsSection() {
         <button
           onClick={() => setShowForm(true)}
           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all hover:scale-105 active:scale-95"
-          style={{
-            background: "linear-gradient(135deg, #06b6d4, #0891b2)",
-            boxShadow: "0 0 20px rgba(6,182,212,0.3)",
-            color: "#fff",
-          }}
+          style={{ background: "linear-gradient(135deg, #06b6d4, #0891b2)", boxShadow: "0 0 20px rgba(6,182,212,0.3)", color: "#fff" }}
         >
           <PenLine className="h-4 w-4" />
           Escribir reseña
