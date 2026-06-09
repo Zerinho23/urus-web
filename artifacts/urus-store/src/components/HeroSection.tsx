@@ -198,7 +198,7 @@ export default function HeroSection() {
             <ArrowRight className="h-4 w-4" />
           </button>
           <a
-            href="https://discord.gg/urus"
+            href="https://discord.gg/panelurus"
             target="_blank"
             rel="noopener noreferrer"
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-semibold text-white/80 border border-white/15 bg-white/5 hover:border-white/30 hover:text-white transition-all duration-200"

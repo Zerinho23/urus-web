@@ -50,7 +50,7 @@ export default function CartDrawer() {
     const lines = items.map(i => `• ${i.name} (${i.game}) — $${(i.price * i.quantity).toFixed(2)} USD`).join("\n");
     const discountLine = appliedCoupon ? `\n🏷️ Cupón ${appliedCoupon} (-${discountPct}%): -$${discountAmt.toFixed(2)} USD` : "";
     const msg = encodeURIComponent(`🛒 **Pedido Urus Store**\n\n${lines}${discountLine}\n\n💰 **Total: $${finalTotal.toFixed(2)} USD**\n\n¿Cómo puedo completar mi compra?`);
-    window.open(`https://discord.gg/urus`, "_blank");
+    window.open(`https://discord.gg/panelurus`, "_blank");
   };
 
   return (

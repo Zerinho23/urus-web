@@ -100,7 +100,7 @@ export default function Header() {
           </div>
 
           <a
-            href="https://discord.gg/urus"
+            href="https://discord.gg/panelurus"
             target="_blank"
             rel="noopener noreferrer"
             className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white transition-all duration-200 hover:scale-105 active:scale-95"
@@ -149,7 +149,7 @@ export default function Header() {
             </button>
           ))}
           <a
-            href="https://discord.gg/urus"
+            href="https://discord.gg/panelurus"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white mt-2"
