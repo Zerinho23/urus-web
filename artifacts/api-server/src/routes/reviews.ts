@@ -1,63 +1,58 @@
-import { Router, type IRouter } from "express";
-import { db } from "@workspace/db";
-import { reviewsTable } from "@workspace/db/schema";
-import { eq, desc } from "drizzle-orm";
-import { z } from "zod/v4";
+import { Router } from "express";
+import { db, reviewsTable } from "@workspace/db";
+import { desc } from "drizzle-orm";
+import { z } from "zod";
 
-const router: IRouter = Router();
+const router = Router();
 
-const submitReviewSchema = z.object({
-  discordUsername: z.string().min(2).max(64),
-  discordDisplayName: z.string().min(2).max(64),
-  content: z.string().min(10).max(1000),
-  product: z.string().max(64).optional(),
+const createReviewSchema = z.object({
+  discordUsername: z.string().min(1).max(64),
+  discordDisplayName: z.string().min(1).max(64),
+  discordAvatarUrl: z.string().url().optional().nullable(),
+  content: z.string().min(1).max(1000),
+  product: z.string().max(128).optional().nullable(),
   rating: z.number().int().min(1).max(5).default(5),
+  imageUrl: z.string().url().optional().nullable(),
 });
 
-router.get("/reviews", async (req, res) => {
+router.get("/api/reviews", async (req, res) => {
   try {
     const reviews = await db
       .select()
       .from(reviewsTable)
-      .where(eq(reviewsTable.approved, true))
       .orderBy(desc(reviewsTable.createdAt))
       .limit(50);
     res.json(reviews);
   } catch (err) {
-    req.log.error({ err }, "Failed to fetch reviews");
-    res.status(500).json({ error: "Failed to fetch reviews" });
+    req.log.error(err, "Error fetching reviews");
+    res.status(500).json({ error: "Error al obtener reseñas" });
   }
 });
 
-router.post("/reviews", async (req, res) => {
-  const parsed = submitReviewSchema.safeParse(req.body);
+router.post("/api/reviews", async (req, res) => {
+  const parsed = createReviewSchema.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: "Datos inválidos", details: parsed.error.issues });
     return;
   }
 
-  const { discordUsername, discordDisplayName, content, product, rating } = parsed.data;
-
   try {
     const [review] = await db
       .insert(reviewsTable)
       .values({
-        discordUserId: `web_${Date.now()}`,
-        discordUsername,
-        discordDisplayName,
-        discordAvatarUrl: null,
-        content,
-        product: product ?? null,
-        support: null,
-        rating,
-        imageUrl: null,
-        approved: true,
+        discordUsername: parsed.data.discordUsername,
+        discordDisplayName: parsed.data.discordDisplayName,
+        discordAvatarUrl: parsed.data.discordAvatarUrl ?? null,
+        content: parsed.data.content,
+        product: parsed.data.product ?? null,
+        rating: parsed.data.rating,
+        imageUrl: parsed.data.imageUrl ?? null,
       })
       .returning();
     res.status(201).json(review);
   } catch (err) {
-    req.log.error({ err }, "Failed to save review");
-    res.status(500).json({ error: "No se pudo guardar la reseña" });
+    req.log.error(err, "Error creating review");
+    res.status(500).json({ error: "Error al guardar la reseña" });
   }
 });
 
