@@ -57,7 +57,6 @@ export default function Header() {
       }}
     >
       <div className="flex justify-between items-center h-20 px-4 md:px-[10%]">
-        {/* Logo */}
         <button className="flex items-center gap-2" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
           <div
             className="h-8 w-8 rounded-lg flex items-center justify-center font-extrabold text-black text-sm"
@@ -70,7 +69,6 @@ export default function Header() {
           </span>
         </button>
 
-        {/* Nav */}
         <nav className="hidden md:flex items-center gap-1 text-sm font-medium text-white/80">
           {NAV_ITEMS.map(({ label, action }) => (
             <button
@@ -84,7 +82,6 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
-          {/* Social icons */}
           <div className="hidden sm:flex items-center gap-0.5">
             {[
               { Icon: YTIcon, href: "#" },
@@ -103,7 +100,6 @@ export default function Header() {
             ))}
           </div>
 
-          {/* Discord */}
           <a
             href="https://discord.gg/urus"
             target="_blank"
@@ -115,7 +111,6 @@ export default function Header() {
             Discord
           </a>
 
-          {/* Cart button in header */}
           <button
             onClick={() => openCart(true)}
             className="relative w-9 h-9 flex items-center justify-center rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-all"
@@ -131,7 +126,6 @@ export default function Header() {
             )}
           </button>
 
-          {/* Hamburger */}
           <button
             className="md:hidden text-white/60 hover:text-white"
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -144,7 +138,6 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile menu */}
       {mobileOpen && (
         <div className="md:hidden border-t border-white/10 bg-black/90 backdrop-blur-sm px-4 py-4 flex flex-col gap-2">
           {NAV_ITEMS.map(({ label, action }) => (
