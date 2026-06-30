@@ -55,15 +55,22 @@ router.post("/checkout", async (req, res) => {
 
     if (!basketRes.ok) {
       const err = await basketRes.text();
-      req.log.error({ status: basketRes.status, err }, "Tebex basket creation failed");
-      res.status(502).json({ error: "No se pudo crear el basket en Tebex" });
+      req.log.error(
+        { status: basketRes.status, webstoreId: TEBEX_WEBSTORE_ID, url: `${TEBEX_BASE}/accounts/${TEBEX_WEBSTORE_ID}/baskets`, err: err.slice(0, 200) },
+        "Tebex basket creation failed"
+      );
+      res.status(502).json({
+        error: "No se pudo crear el basket en Tebex",
+        detail: `Tebex respondió ${basketRes.status}. Verifica que TEBEX_WEBSTORE_ID sea el Public Token (no el ID numérico).`,
+      });
       return;
     }
 
     const basketData = (await basketRes.json()) as {
-      data: { ident: string; links: { checkout: string } };
+      data: { ident: string; links?: { checkout?: string } };
     };
     const { ident, links } = basketData.data;
+    req.log.info({ ident, links }, "Tebex basket created");
 
     // 2. Add packages to basket
     const skipped: string[] = [];
@@ -97,8 +104,11 @@ router.post("/checkout", async (req, res) => {
       return;
     }
 
+    // Tebex puede devolver el link en links.checkout o construirlo desde el ident
+    const checkoutUrl = links?.checkout ?? `https://checkout.tebex.io/checkout/${ident}`;
+
     res.json({
-      checkoutUrl: links.checkout,
+      checkoutUrl,
       basketIdent: ident,
       skipped,
     });
