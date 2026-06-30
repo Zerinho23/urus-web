@@ -127,7 +127,6 @@ const products = [
     badge: "BYPASS",
     badgeBg: "#ef4444",
     icon: <Lock className="h-9 w-9" />,
-    image: "/bypass-apk.png",
     features: ["Bluestacks 5 & MSI 5", "Sin ban garantizado", "FF Normal"],
     tagline: "Sortea el sistema anti-cheat",
     plans: [
@@ -219,6 +218,24 @@ const products = [
       { duration: "15 días", price: 28 },
       { duration: "30 días", price: 32 },
       { duration: "60 días", price: 48 },
+    ] as Plan[],
+  },
+  {
+    id: 13,
+    name: "Panel Undetected",
+    game: "Free Fire",
+    category: "freefire" as const,
+    accentColor: "#06b6d4",
+    gradientFrom: "#001a1f",
+    gradientTo: "#0a0b0f",
+    badge: "UNDETECTED",
+    badgeBg: "linear-gradient(135deg,#06b6d4,#0e7490)",
+    icon: <ShieldCheck className="h-9 w-9" />,
+    features: ["100% indetectable", "Anti-ban activo", "Actualizaciones constantes"],
+    tagline: "El panel que el anti-cheat no puede ver",
+    plans: [
+      { duration: "7 días", price: 8 },
+      { duration: "30 días", price: 15 },
     ] as Plan[],
   },
   // ──── BLOODSTRIKE ────
