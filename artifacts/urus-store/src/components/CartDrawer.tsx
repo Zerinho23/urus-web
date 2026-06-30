@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { getApiBase } from "@/lib/api";
 import { X, ShoppingCart, Trash2, Tag, ChevronRight, Package, Zap, Shield, Loader2, CreditCard } from "lucide-react";
 import { useCart, itemKey } from "@/context/CartContext";
 
@@ -44,10 +45,8 @@ export default function CartDrawer() {
     setCheckoutLoading(true);
     setCheckoutError("");
     try {
-      const base = (import.meta.env.BASE_URL ?? "/").replace(/\/$/, "");
-      const apiBase = (import.meta.env.VITE_API_BASE_URL ?? `${base}/api`).replace(/\/$/, "");
       const origin = window.location.origin;
-      const res = await fetch(`${apiBase}/checkout`, {
+      const res = await fetch(`${getApiBase()}/checkout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
