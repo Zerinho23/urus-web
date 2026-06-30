@@ -132271,10 +132271,13 @@ router3.post("/checkout", async (req, res) => {
     const { ident, links } = basketData.data;
     req.log.info({ ident, links }, "Tebex basket created");
     const skipped = [];
+    const failed = [];
+    let addedCount = 0;
     for (const item of items) {
       const packageId = TEBEX_PACKAGES[item.name];
       if (!packageId) {
         skipped.push(item.name);
+        req.log.warn({ itemName: item.name }, "No Tebex package_id configured for item");
         continue;
       }
       const pkgRes = await fetch(`${TEBEX_BASE}/baskets/${ident}/packages`, {
@@ -132284,19 +132287,28 @@ router3.post("/checkout", async (req, res) => {
       });
       if (!pkgRes.ok) {
         const err = await pkgRes.text();
-        req.log.warn({ packageId, item: item.name, err }, "Failed to add package to basket");
+        req.log.error(
+          { packageId, itemName: item.name, status: pkgRes.status, err: err.slice(0, 300) },
+          "Tebex rejected package \u2014 check that package_id exists in this webstore"
+        );
+        failed.push(item.name);
+      } else {
+        addedCount++;
+        req.log.info({ packageId, itemName: item.name }, "Package added to basket");
       }
     }
-    if (skipped.length === items.length) {
+    if (addedCount === 0) {
+      const allSkipped = skipped.length === items.length;
       res.status(422).json({
         error: "products_not_configured",
-        message: "Estos productos a\xFAn no est\xE1n vinculados a Tebex. Contacta al soporte.",
-        skipped
+        message: allSkipped ? "Estos productos a\xFAn no est\xE1n vinculados a Tebex. Contacta al soporte por Discord." : "No se pudieron agregar los productos al basket de Tebex (package_id inv\xE1lido o no pertenece a este webstore). Revisa los IDs en tebex-packages.ts.",
+        skipped,
+        failed
       });
       return;
     }
     const checkoutUrl = links?.checkout ?? `https://checkout.tebex.io/checkout/${ident}`;
-    res.json({ checkoutUrl, basketIdent: ident, skipped });
+    res.json({ checkoutUrl, basketIdent: ident, skipped, failed });
   } catch (err) {
     req.log.error({ err }, "Error during Tebex checkout");
     res.status(500).json({ error: "Error interno al procesar el checkout" });
