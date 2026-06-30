@@ -3,8 +3,7 @@
 
   [phases.install]
   cmds = [
-    "npm install -g pnpm@9.15.4",
-    "pnpm install --prod=false --no-frozen-lockfile"
+    "npm install -g pnpm@9.15.4 && pnpm install --prod=false --no-frozen-lockfile"
   ]
 
   [phases.build]
