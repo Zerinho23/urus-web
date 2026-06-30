@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, ShoppingCart, Trash2, Tag, ChevronRight, Package, Zap, Shield } from "lucide-react";
+import { X, ShoppingCart, Trash2, Tag, ChevronRight, Package, Zap, Shield, Loader2, CreditCard } from "lucide-react";
 import { useCart, itemKey } from "@/context/CartContext";
 
 const DiscordIcon = ({ size = 16 }: { size?: number }) => (
@@ -27,6 +27,8 @@ export default function CartDrawer() {
   const [couponInput, setCouponInput] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
   const [couponError, setCouponError] = useState("");
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [checkoutError, setCheckoutError] = useState("");
 
   if (!open) return null;
 
@@ -46,10 +48,54 @@ export default function CartDrawer() {
     }
   };
 
-  const handleCheckout = () => {
-    const lines = items.map(i => `• ${i.name} (${i.game}) — $${(i.price * i.quantity).toFixed(2)} USD`).join("\n");
-    const discountLine = appliedCoupon ? `\n🏷️ Cupón ${appliedCoupon} (-${discountPct}%): -$${discountAmt.toFixed(2)} USD` : "";
-    const msg = encodeURIComponent(`🛒 **Pedido Urus Store**\n\n${lines}${discountLine}\n\n💰 **Total: $${finalTotal.toFixed(2)} USD**\n\n¿Cómo puedo completar mi compra?`);
+  const handleTebexCheckout = async () => {
+    setCheckoutLoading(true);
+    setCheckoutError("");
+
+    try {
+      const base = (import.meta.env.BASE_URL ?? "/").replace(/\/$/, "");
+      const origin = window.location.origin;
+
+      const res = await fetch(`${base}/api/checkout`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: items.map((i) => ({ name: i.name, quantity: i.quantity })),
+          completeUrl: `${origin}${base}/?checkout=success`,
+          cancelUrl: `${origin}${base}/?checkout=cancelled`,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        if (data.error === "tebex_not_configured" || data.error === "products_not_configured") {
+          // Fallback to Discord
+          handleDiscordFallback();
+          return;
+        }
+        throw new Error(data.message ?? "Error al procesar el pago");
+      }
+
+      if (data.checkoutUrl) {
+        window.location.href = data.checkoutUrl;
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Error al iniciar el pago";
+      setCheckoutError(msg);
+      setTimeout(() => setCheckoutError(""), 4000);
+    } finally {
+      setCheckoutLoading(false);
+    }
+  };
+
+  const handleDiscordFallback = () => {
+    const lines = items.map(
+      (i) => `• ${i.name} (${i.game}) — $${(i.price * i.quantity).toFixed(2)} USD`
+    ).join("\n");
+    const discountLine = appliedCoupon
+      ? `\n🏷️ Cupón ${appliedCoupon} (-${discountPct}%): -$${discountAmt.toFixed(2)} USD`
+      : "";
     window.open(`https://discord.gg/panelurus`, "_blank");
   };
 
@@ -93,7 +139,7 @@ export default function CartDrawer() {
               </button>
             )}
             <button onClick={() => setOpen(false)}
-              className="w-8 h-8 flex items-center justify-center rounded-lg text-white/40 hover:text-white hover:bg-white/08 transition-all"
+              className="w-8 h-8 flex items-center justify-center rounded-lg text-white/40 hover:text-white transition-all"
               style={{ background: "rgba(255,255,255,0.05)" }}>
               <X className="h-4 w-4" />
             </button>
@@ -103,7 +149,6 @@ export default function CartDrawer() {
         {/* Content */}
         <div className="flex-1 overflow-y-auto" style={{ scrollbarWidth: "none" }}>
           {items.length === 0 ? (
-            /* Empty state */
             <div className="flex flex-col items-center justify-center h-full gap-5 text-center px-8">
               <div className="relative">
                 <div className="w-20 h-20 rounded-2xl flex items-center justify-center"
@@ -136,11 +181,8 @@ export default function CartDrawer() {
                     border: `1px solid ${hexToRgba(item.accentColor, 0.2)}`,
                   }}
                 >
-                  {/* Left accent bar */}
                   <div className="absolute left-0 top-0 bottom-0 w-[3px] rounded-l-2xl"
                     style={{ background: item.accentColor, boxShadow: `0 0 8px ${hexToRgba(item.accentColor, 0.6)}` }} />
-
-                  {/* Icon badge */}
                   <div className="w-11 h-11 rounded-xl flex items-center justify-center text-sm font-extrabold text-white shrink-0"
                     style={{
                       background: `linear-gradient(135deg, ${hexToRgba(item.accentColor, 0.2)}, ${hexToRgba(item.accentColor, 0.08)})`,
@@ -149,8 +191,6 @@ export default function CartDrawer() {
                     }}>
                     {item.name.slice(0, 2).toUpperCase()}
                   </div>
-
-                  {/* Info */}
                   <div className="flex-1 min-w-0">
                     <p className="text-white font-bold text-sm leading-tight truncate">{item.name}</p>
                     <p className="text-white/35 text-[11px] mt-0.5">{item.game}</p>
@@ -161,17 +201,14 @@ export default function CartDrawer() {
                       <span className="text-white/25 text-[10px]">USD</span>
                     </div>
                   </div>
-
-                  {/* Remove */}
                   <button onClick={() => removeItem(itemKey(item))}
-                    className="w-7 h-7 rounded-lg flex items-center justify-center text-white/20 hover:text-red-400 hover:bg-red-500/10 transition-all opacity-0 group-hover:opacity-100 shrink-0"
-                  >
+                    className="w-7 h-7 rounded-lg flex items-center justify-center text-white/20 hover:text-red-400 hover:bg-red-500/10 transition-all opacity-0 group-hover:opacity-100 shrink-0">
                     <X className="h-3.5 w-3.5" />
                   </button>
                 </div>
               ))}
 
-              {/* Coupon section */}
+              {/* Coupon */}
               <div className="mt-1 p-4 rounded-2xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
                 <div className="flex items-center gap-2 mb-3">
                   <Tag className="h-3.5 w-3.5 text-yellow-400" />
@@ -186,8 +223,7 @@ export default function CartDrawer() {
                       </span>
                       <span className="text-green-400 text-xs font-bold">−{discountPct}% aplicado ✓</span>
                     </div>
-                    <button onClick={() => setAppliedCoupon(null)}
-                      className="text-white/25 hover:text-white/60 transition-colors text-xs">
+                    <button onClick={() => setAppliedCoupon(null)} className="text-white/25 hover:text-white/60 transition-colors text-xs">
                       Quitar
                     </button>
                   </div>
@@ -218,7 +254,7 @@ export default function CartDrawer() {
           )}
         </div>
 
-        {/* Footer — Order summary + CTA */}
+        {/* Footer */}
         {items.length > 0 && (
           <div className="p-5 flex flex-col gap-4 border-t" style={{ borderColor: "rgba(255,255,255,0.07)" }}>
             {/* Summary */}
@@ -244,18 +280,51 @@ export default function CartDrawer() {
               </div>
             </div>
 
-            {/* CTA */}
+            {/* Error */}
+            {checkoutError && (
+              <div className="px-4 py-3 rounded-xl text-xs text-red-300 font-medium"
+                style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.25)" }}>
+                {checkoutError}
+              </div>
+            )}
+
+            {/* Tebex CTA */}
             <button
-              onClick={handleCheckout}
-              className="w-full flex items-center justify-center gap-2.5 py-4 rounded-2xl font-extrabold text-white transition-all hover:scale-[1.02] active:scale-[0.98] text-sm"
+              onClick={handleTebexCheckout}
+              disabled={checkoutLoading}
+              className="w-full flex items-center justify-center gap-2.5 py-4 rounded-2xl font-extrabold text-white transition-all text-sm disabled:opacity-70 disabled:cursor-not-allowed"
               style={{
-                background: "linear-gradient(135deg, #5865F2 0%, #4752c4 100%)",
-                boxShadow: "0 0 30px rgba(88,101,242,0.45), 0 4px 20px rgba(0,0,0,0.4)",
+                background: checkoutLoading
+                  ? "rgba(6,182,212,0.3)"
+                  : "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)",
+                boxShadow: checkoutLoading
+                  ? "none"
+                  : "0 0 30px rgba(6,182,212,0.4), 0 4px 20px rgba(0,0,0,0.4)",
+                transform: checkoutLoading ? "none" : undefined,
               }}
             >
-              <DiscordIcon size={18} />
-              Comprar por Discord
-              <ChevronRight className="h-4 w-4 opacity-70" />
+              {checkoutLoading ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Iniciando pago...
+                </>
+              ) : (
+                <>
+                  <CreditCard className="h-4 w-4" />
+                  Pagar con Tebex
+                  <ChevronRight className="h-4 w-4 opacity-70" />
+                </>
+              )}
+            </button>
+
+            {/* Discord fallback */}
+            <button
+              onClick={handleDiscordFallback}
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-semibold text-white/50 hover:text-white/80 transition-colors text-xs"
+              style={{ background: "rgba(88,101,242,0.07)", border: "1px solid rgba(88,101,242,0.2)" }}
+            >
+              <DiscordIcon size={13} />
+              O compra por Discord
             </button>
 
             {/* Trust badges */}
@@ -265,8 +334,7 @@ export default function CartDrawer() {
                 { icon: <Shield className="h-3 w-3" />, label: "100% seguro" },
               ].map(({ icon, label }) => (
                 <div key={label} className="flex items-center gap-1 text-white/25 text-[10px]">
-                  {icon}
-                  {label}
+                  {icon}{label}
                 </div>
               ))}
             </div>
