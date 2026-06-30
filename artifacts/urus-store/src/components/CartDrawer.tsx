@@ -45,8 +45,9 @@ export default function CartDrawer() {
     setCheckoutError("");
     try {
       const base = (import.meta.env.BASE_URL ?? "/").replace(/\/$/, "");
+      const apiBase = (import.meta.env.VITE_API_BASE_URL ?? `${base}/api`).replace(/\/$/, "");
       const origin = window.location.origin;
-      const res = await fetch(`${base}/api/checkout`, {
+      const res = await fetch(`${apiBase}/checkout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
