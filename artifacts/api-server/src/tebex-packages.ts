@@ -47,7 +47,7 @@ export const TEBEX_PACKAGES: Record<string, number> = {
   "Chams ESP — 1 mes":   0,
 
   // ── Bypass APK ────────────────────────────────────────────────────────────
-  "Bypass APK — 1 día":    0,
+  "Bypass APK — 1 día":    3372036,
   "Bypass APK — 7 días":   0,
   "Bypass APK — 30 días":  0,
   "Bypass APK — 90 días":  0,
