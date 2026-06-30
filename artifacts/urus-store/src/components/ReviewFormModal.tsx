@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { getApiBase } from "@/lib/api";
 import { X, Star, Send, CheckCircle } from "lucide-react";
 
 const PRODUCTS = [
@@ -34,8 +35,7 @@ export default function ReviewFormModal({ onClose }: Props) {
     }
     setLoading(true);
     try {
-      const base = (import.meta.env.BASE_URL ?? "/").replace(/\/$/, "");
-      const res = await fetch(`${base}/api/reviews`, {
+      const res = await fetch(`${getApiBase()}/reviews`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
