@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { getApiBase } from "@/lib/api";
 import { MessageSquare, Star, ThumbsUp, Shield, Users } from "lucide-react";
 
 interface Review {
@@ -119,8 +120,7 @@ export default function ReviewsSection() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const base = (import.meta.env.BASE_URL ?? "/").replace(/\/$/, "");
-    fetch(`${base}/api/reviews`)
+    fetch(`${getApiBase()}/reviews`)
       .then((r) => r.ok ? r.json() : null)
       .then((data: Review[] | null) => { if (data && data.length > 0) setReviews(data); })
       .catch(() => {});
