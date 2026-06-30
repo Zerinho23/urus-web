@@ -25,7 +25,21 @@ app.use(
     },
   }),
 );
-app.use(cors());
+
+// CORS: allow the Vercel frontend (set CORS_ORIGIN env var in Railway)
+// or fall back to allowing all origins in dev.
+const allowedOrigin = process.env["CORS_ORIGIN"];
+app.use(
+  cors(
+    allowedOrigin
+      ? {
+          origin: allowedOrigin.split(",").map((o) => o.trim()),
+          credentials: true,
+        }
+      : undefined,
+  ),
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
