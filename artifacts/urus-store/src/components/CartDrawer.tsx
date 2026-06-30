@@ -47,21 +47,31 @@ export default function CartDrawer() {
     try {
       const base = (import.meta.env.BASE_URL ?? "/").replace(/\/$/, "");
       const origin = window.location.origin;
-      const res = await fetch(`${getApiBase()}/checkout`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          items: items.map((i) => ({ name: i.name, quantity: i.quantity })),
-          completeUrl: `${origin}${base}/?checkout=success`,
-          cancelUrl: `${origin}${base}/?checkout=cancelled`,
-        }),
-      });
+      const endpoint = `${getApiBase()}/checkout`;
+      console.log("[Tebex] POST", endpoint);
+      let res: Response;
+      try {
+        res = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            items: items.map((i) => ({ name: i.name, quantity: i.quantity })),
+            completeUrl: `${origin}${base}/?checkout=success`,
+            cancelUrl: `${origin}${base}/?checkout=cancelled`,
+          }),
+        });
+      } catch (networkErr) {
+        const msg = networkErr instanceof Error ? networkErr.message : "Error de red";
+        console.error("[Tebex] Network/CORS error:", networkErr);
+        throw new Error(`No se pudo conectar con el servidor (${msg}). Revisa la URL de la API en Vercel.`);
+      }
       const raw = await res.text();
+      console.log("[Tebex] Status:", res.status, "Body:", raw.slice(0, 300));
       let data: Record<string, unknown>;
       try {
         data = JSON.parse(raw) as Record<string, unknown>;
       } catch {
-        throw new Error("El servidor no está disponible. Intenta de nuevo en un momento.");
+        throw new Error(`El servidor respondió con un error (${res.status}). Verifica que VITE_API_BASE_URL termine en /api y que Railway esté activo.`);
       }
       if (!res.ok) {
         if (data["error"] === "tebex_not_configured" || data["error"] === "products_not_configured") { handleDiscordFallback(); return; }
@@ -71,7 +81,7 @@ export default function CartDrawer() {
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Error al iniciar el pago";
       setCheckoutError(msg);
-      setTimeout(() => setCheckoutError(""), 4000);
+      setTimeout(() => setCheckoutError(""), 6000);
     } finally {
       setCheckoutLoading(false);
     }
