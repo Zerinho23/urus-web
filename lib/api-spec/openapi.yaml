@@ -1,0 +1,171 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: Urus Store API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: reviews
+    description: Customer reviews
+  - name: checkout
+    description: Tebex checkout
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /reviews:
+    get:
+      operationId: listReviews
+      tags: [reviews]
+      summary: List approved reviews
+      responses:
+        "200":
+          description: List of reviews
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Review"
+    post:
+      operationId: createReview
+      tags: [reviews]
+      summary: Create a review
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReviewInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Review"
+
+  /checkout:
+    post:
+      operationId: createCheckout
+      tags: [checkout]
+      summary: Create a Tebex checkout basket
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CheckoutInput"
+      responses:
+        "200":
+          description: Checkout URL
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CheckoutResult"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+
+    Review:
+      type: object
+      required: [id, discordUsername, discordDisplayName, content, rating, approved, createdAt]
+      properties:
+        id:
+          type: integer
+        discordUserId:
+          type: ["string", "null"]
+        discordUsername:
+          type: string
+        discordDisplayName:
+          type: string
+        discordAvatarUrl:
+          type: ["string", "null"]
+        content:
+          type: string
+        product:
+          type: ["string", "null"]
+        support:
+          type: ["string", "null"]
+        rating:
+          type: integer
+        imageUrl:
+          type: ["string", "null"]
+        approved:
+          type: boolean
+        createdAt:
+          type: string
+
+    ReviewInput:
+      type: object
+      required: [discordUsername, discordDisplayName, content]
+      properties:
+        discordUsername:
+          type: string
+        discordDisplayName:
+          type: string
+        discordAvatarUrl:
+          type: ["string", "null"]
+        content:
+          type: string
+        product:
+          type: ["string", "null"]
+        rating:
+          type: integer
+        imageUrl:
+          type: ["string", "null"]
+
+    CheckoutInput:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/CartItem"
+        completeUrl:
+          type: ["string", "null"]
+        cancelUrl:
+          type: ["string", "null"]
+
+    CartItem:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        quantity:
+          type: integer
+
+    CheckoutResult:
+      type: object
+      required: [checkoutUrl, basketIdent]
+      properties:
+        checkoutUrl:
+          type: string
+        basketIdent:
+          type: string
+        skipped:
+          type: array
+          items:
+            type: string

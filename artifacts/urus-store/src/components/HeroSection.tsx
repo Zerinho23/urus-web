@@ -68,134 +68,61 @@ export default function HeroSection() {
   return (
     <div
       className="relative w-full overflow-hidden"
-      style={{
-        minHeight: "100svh",
-        background: "#050608",
-      }}
+      style={{ minHeight: "100svh", background: "#050608" }}
     >
-      {/* Grid */}
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(34,211,238,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(34,211,238,0.07) 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
-          zIndex: 1,
-        }}
-      />
+      <div className="absolute inset-0" style={{
+        backgroundImage: "linear-gradient(rgba(34,211,238,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(34,211,238,0.07) 1px, transparent 1px)",
+        backgroundSize: "60px 60px", zIndex: 1,
+      }} />
+      <div className="absolute rounded-full blur-3xl pointer-events-none" style={{
+        width: 700, height: 400, top: -100, left: "50%", transform: "translateX(-50%)",
+        background: "radial-gradient(ellipse, rgba(6,182,212,0.18) 0%, transparent 70%)", zIndex: 2,
+      }} />
+      <div className="absolute rounded-full blur-3xl pointer-events-none" style={{
+        width: 500, height: 500, bottom: -100, right: -100,
+        background: "radial-gradient(ellipse, rgba(139,92,246,0.12) 0%, transparent 70%)", zIndex: 2,
+      }} />
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 3 }} />
+      <div className="absolute inset-x-0 bottom-0 h-40 pointer-events-none" style={{ background: "linear-gradient(to top, #050608, transparent)", zIndex: 4 }} />
 
-      {/* Cyan orb top-center */}
-      <div
-        className="absolute rounded-full blur-3xl pointer-events-none"
-        style={{
-          width: 700, height: 400,
-          top: -100, left: "50%", transform: "translateX(-50%)",
-          background: "radial-gradient(ellipse, rgba(6,182,212,0.18) 0%, transparent 70%)",
-          zIndex: 2,
-        }}
-      />
-
-      {/* Purple orb bottom-right */}
-      <div
-        className="absolute rounded-full blur-3xl pointer-events-none"
-        style={{
-          width: 500, height: 500,
-          bottom: -100, right: -100,
-          background: "radial-gradient(ellipse, rgba(139,92,246,0.12) 0%, transparent 70%)",
-          zIndex: 2,
-        }}
-      />
-
-      {/* Particle canvas */}
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 w-full h-full pointer-events-none"
-        style={{ zIndex: 3 }}
-      />
-
-      {/* Fade-to-black at bottom */}
-      <div
-        className="absolute inset-x-0 bottom-0 h-40 pointer-events-none"
-        style={{ background: "linear-gradient(to top, #050608, transparent)", zIndex: 4 }}
-      />
-
-      {/* Content */}
-      <div
-        className="relative flex flex-col justify-center items-center text-center px-5 md:px-16"
-        style={{ zIndex: 5, minHeight: "100svh", paddingTop: 120, paddingBottom: 60 }}
-      >
-        {/* Status pill */}
+      <div className="relative flex flex-col justify-center items-center text-center px-5 md:px-16" style={{ zIndex: 5, minHeight: "100svh", paddingTop: 120, paddingBottom: 60 }}>
         <div style={fadeUp(0)}>
-          <span
-            className="inline-flex items-center gap-2 text-[11px] font-bold tracking-widest uppercase px-4 py-1.5 rounded-full mb-6"
-            style={{
-              background: "rgba(6,182,212,0.08)",
-              border: "1px solid rgba(6,182,212,0.25)",
-              color: "#22d3ee",
-            }}
-          >
-            <span
-              className="w-2 h-2 rounded-full"
-              style={{
-                background: "#22d3ee",
-                boxShadow: "0 0 6px #22d3ee",
-                animation: "pulse-dot 2s ease-in-out infinite",
-              }}
-            />
+          <span className="inline-flex items-center gap-2 text-[11px] font-bold tracking-widest uppercase px-4 py-1.5 rounded-full mb-6"
+            style={{ background: "rgba(6,182,212,0.08)", border: "1px solid rgba(6,182,212,0.25)", color: "#22d3ee" }}>
+            <span className="w-2 h-2 rounded-full" style={{ background: "#22d3ee", boxShadow: "0 0 6px #22d3ee", animation: "pulse-dot 2s ease-in-out infinite" }} />
             Status: Indetectable
           </span>
         </div>
 
-        {/* Headline */}
         <div style={fadeUp(120)}>
-          <h1
-            className="font-extrabold text-white leading-[1.05] mb-3"
-            style={{ fontSize: "clamp(2.6rem, 8vw, 5.5rem)" }}
-          >
+          <h1 className="font-extrabold text-white leading-[1.05] mb-3" style={{ fontSize: "clamp(2.6rem, 8vw, 5.5rem)" }}>
             Domina todo el lobby
           </h1>
         </div>
 
         <div style={fadeUp(200)}>
-          <p
-            className="font-extrabold leading-[1.05] mb-5"
-            style={{
-              fontSize: "clamp(2.6rem, 8vw, 5.5rem)",
-              background: "linear-gradient(135deg, #06b6d4, #a78bfa)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
+          <p className="font-extrabold leading-[1.05] mb-5" style={{
+            fontSize: "clamp(2.6rem, 8vw, 5.5rem)",
+            background: "linear-gradient(135deg, #06b6d4, #a78bfa)",
+            WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+          }}>
             Urus Store
           </p>
         </div>
 
-        {/* Subtitle */}
         <div style={fadeUp(300)}>
-          <p
-            className="text-white/55 leading-relaxed max-w-md mb-10"
-            style={{ fontSize: "clamp(0.9rem, 2.5vw, 1.1rem)" }}
-          >
+          <p className="text-white/55 leading-relaxed max-w-md mb-10" style={{ fontSize: "clamp(0.9rem, 2.5vw, 1.1rem)" }}>
             Productos premium con entrega rápida, actualizaciones constantes y soporte dedicado.
           </p>
         </div>
 
-        {/* CTAs */}
-        <div
-          className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-12 w-full"
-          style={{ maxWidth: 420, ...fadeUp(420) }}
-        >
+        <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-12 w-full" style={{ maxWidth: 420, ...fadeUp(420) }}>
           <button
             onClick={() => document.getElementById("products")?.scrollIntoView({ behavior: "smooth" })}
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-white transition-all duration-200 hover:scale-105 active:scale-95"
-            style={{
-              background: "linear-gradient(135deg, #06b6d4, #0891b2)",
-              boxShadow: "0 0 30px rgba(6,182,212,0.45), 0 4px 20px rgba(0,0,0,0.4)",
-              fontSize: "1rem",
-            }}
+            style={{ background: "linear-gradient(135deg, #06b6d4, #0891b2)", boxShadow: "0 0 30px rgba(6,182,212,0.45), 0 4px 20px rgba(0,0,0,0.4)", fontSize: "1rem" }}
           >
-            Compra Ahora
-            <ArrowRight className="h-4 w-4" />
+            Compra Ahora <ArrowRight className="h-4 w-4" />
           </button>
           <a
             href="https://discord.gg/panelurus"
@@ -204,16 +131,11 @@ export default function HeroSection() {
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-semibold text-white/80 border border-white/15 bg-white/5 hover:border-white/30 hover:text-white transition-all duration-200"
             style={{ fontSize: "0.9rem", backdropFilter: "blur(8px)" }}
           >
-            <DiscordIcon />
-            Únete en Discord
+            <DiscordIcon /> Únete en Discord
           </a>
         </div>
 
-        {/* Trust badges */}
-        <div
-          className="flex flex-wrap gap-x-6 gap-y-2 justify-center items-center"
-          style={fadeUp(540)}
-        >
+        <div className="flex flex-wrap gap-x-6 gap-y-2 justify-center items-center" style={fadeUp(540)}>
           {[
             { icon: <Shield className="h-3.5 w-3.5" />, label: "Indetectable" },
             { icon: <Zap className="h-3.5 w-3.5" />, label: "Entrega Inmediata" },

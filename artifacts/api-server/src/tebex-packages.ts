@@ -36,8 +36,8 @@ export const TEBEX_PACKAGES: Record<string, number> = {
   "Panel Básico — 60 días": 0,
 
   // ── Emulador Competitivo ──────────────────────────────────────────────────
-  "Emulador Competitivo — 1 mes":    0,
-  "Emulador Competitivo — 2 meses":  0,
+  "Emulador Competitivo — 1 mes":   0,
+  "Emulador Competitivo — 2 meses": 0,
 
   // ── Chams ESP ─────────────────────────────────────────────────────────────
   "Chams ESP — 1 día":   0,

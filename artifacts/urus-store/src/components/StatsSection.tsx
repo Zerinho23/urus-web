@@ -24,12 +24,8 @@ function CountUp({ target, suffix }: { target: number; suffix: string }) {
           let current = 0;
           const timer = setInterval(() => {
             current += increment;
-            if (current >= target) {
-              setCount(target);
-              clearInterval(timer);
-            } else {
-              setCount(Math.floor(current));
-            }
+            if (current >= target) { setCount(target); clearInterval(timer); }
+            else setCount(Math.floor(current));
           }, duration / steps);
         }
       },
@@ -49,25 +45,17 @@ function CountUp({ target, suffix }: { target: number; suffix: string }) {
 export default function StatsSection() {
   return (
     <section className="py-16 px-4 md:px-[10%]">
-      <div
-        className="rounded-2xl p-8 md:p-12 border"
-        style={{
-          background: "linear-gradient(135deg, rgba(6,182,212,0.05), rgba(8,145,178,0.03))",
-          borderColor: "rgba(6,182,212,0.15)",
-        }}
-      >
+      <div className="rounded-2xl p-8 md:p-12 border"
+        style={{ background: "linear-gradient(135deg, rgba(6,182,212,0.05), rgba(8,145,178,0.03))", borderColor: "rgba(6,182,212,0.15)" }}>
         <div className="text-center mb-10">
           <p className="text-sm text-cyan-400/70 uppercase tracking-widest mb-1">Nuestros Números</p>
           <h2 className="text-3xl md:text-4xl font-bold text-white">Confianza que Habla por Sí Sola</h2>
         </div>
-
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {stats.map((stat, i) => (
             <div key={i} className="flex flex-col items-center text-center gap-3">
-              <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center text-cyan-400"
-                style={{ background: "rgba(6,182,212,0.1)", border: "1px solid rgba(6,182,212,0.2)" }}
-              >
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center text-cyan-400"
+                style={{ background: "rgba(6,182,212,0.1)", border: "1px solid rgba(6,182,212,0.2)" }}>
                 {stat.icon}
               </div>
               <CountUp target={stat.value} suffix={stat.suffix} />

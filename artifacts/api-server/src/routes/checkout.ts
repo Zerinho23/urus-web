@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { z } from "zod";
+import { z } from "zod/v4";
 import { TEBEX_PACKAGES } from "../tebex-packages";
 
 const router = Router();
@@ -42,7 +42,6 @@ router.post("/checkout", async (req, res) => {
   };
 
   try {
-    // 1. Create basket
     const basketRes = await fetch(`${TEBEX_BASE}/accounts/${TEBEX_WEBSTORE_ID}/baskets`, {
       method: "POST",
       headers: tebexHeaders,
@@ -56,12 +55,12 @@ router.post("/checkout", async (req, res) => {
     if (!basketRes.ok) {
       const err = await basketRes.text();
       req.log.error(
-        { status: basketRes.status, webstoreId: TEBEX_WEBSTORE_ID, url: `${TEBEX_BASE}/accounts/${TEBEX_WEBSTORE_ID}/baskets`, err: err.slice(0, 200) },
+        { status: basketRes.status, webstoreId: TEBEX_WEBSTORE_ID, err: err.slice(0, 200) },
         "Tebex basket creation failed"
       );
       res.status(502).json({
         error: "No se pudo crear el basket en Tebex",
-        detail: `Tebex respondió ${basketRes.status}. Verifica que TEBEX_WEBSTORE_ID sea el Public Token (no el ID numérico).`,
+        detail: `Tebex respondió ${basketRes.status}. Verifica que TEBEX_WEBSTORE_ID sea el Public Token.`,
       });
       return;
     }
@@ -72,16 +71,11 @@ router.post("/checkout", async (req, res) => {
     const { ident, links } = basketData.data;
     req.log.info({ ident, links }, "Tebex basket created");
 
-    // 2. Add packages to basket
     const skipped: string[] = [];
 
     for (const item of items) {
       const packageId = TEBEX_PACKAGES[item.name];
-
-      if (!packageId) {
-        skipped.push(item.name);
-        continue;
-      }
+      if (!packageId) { skipped.push(item.name); continue; }
 
       const pkgRes = await fetch(`${TEBEX_BASE}/baskets/${ident}/packages`, {
         method: "POST",
@@ -104,14 +98,9 @@ router.post("/checkout", async (req, res) => {
       return;
     }
 
-    // Tebex puede devolver el link en links.checkout o construirlo desde el ident
     const checkoutUrl = links?.checkout ?? `https://checkout.tebex.io/checkout/${ident}`;
 
-    res.json({
-      checkoutUrl,
-      basketIdent: ident,
-      skipped,
-    });
+    res.json({ checkoutUrl, basketIdent: ident, skipped });
   } catch (err) {
     req.log.error({ err }, "Error during Tebex checkout");
     res.status(500).json({ error: "Error interno al procesar el checkout" });

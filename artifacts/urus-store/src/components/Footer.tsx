@@ -33,11 +33,7 @@ export default function Footer() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
         <div className="col-span-1 md:col-span-2">
           <div className="flex items-center gap-2 mb-4">
-            <img
-              src="/urc-logo.png"
-              alt="Urus Cheats"
-              className="h-12 w-12 rounded-xl object-cover"
-            />
+            <img src="/urc-logo.png" alt="Urus Cheats" className="h-12 w-12 rounded-xl object-cover" />
             <span className="text-white font-bold text-xl">Urus Store</span>
           </div>
           <p className="text-white/40 text-sm leading-relaxed max-w-xs">
@@ -45,14 +41,9 @@ export default function Footer() {
           </p>
           <div className="flex items-center gap-2 mt-4">
             {[YTIcon, IGIcon, TikTokIcon, DiscordIcon].map((Icon, i) => (
-              <a
-                key={i}
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
+              <a key={i} href="#" target="_blank" rel="noopener noreferrer"
                 className="w-9 h-9 flex items-center justify-center rounded-lg text-white/40 hover:text-white transition-all duration-200 hover:scale-110"
-                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}
-              >
+                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
                 <Icon />
               </a>
             ))}
@@ -82,10 +73,7 @@ export default function Footer() {
         </div>
       </div>
 
-      <div
-        className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 border-t"
-        style={{ borderColor: "rgba(255,255,255,0.06)" }}
-      >
+      <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
         <p className="text-white/30 text-xs">© {year} Urus Store. Todos los derechos reservados.</p>
         <div className="flex items-center gap-4">
           <a href="#" className="text-white/30 text-xs hover:text-white/60 transition-colors">Política de privacidad</a>

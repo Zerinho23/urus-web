@@ -52,28 +52,16 @@ function ReviewCard({ review, index }: { review: Review; index: number }) {
   const lines = review.content.split("\n").filter(Boolean);
 
   return (
-    <div
-      className="relative flex flex-col rounded-2xl overflow-hidden shrink-0 select-none"
-      style={{
-        width: "320px",
-        background: "linear-gradient(160deg, #0f1117 0%, #0a0b0f 100%)",
-        border: `1px solid ${hexToRgba(accent, 0.18)}`,
-        boxShadow: `0 4px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.03)`,
-      }}
-    >
-      {/* Top accent bar */}
+    <div className="relative flex flex-col rounded-2xl overflow-hidden shrink-0 select-none"
+      style={{ width: "320px", background: "linear-gradient(160deg, #0f1117 0%, #0a0b0f 100%)", border: `1px solid ${hexToRgba(accent, 0.18)}`, boxShadow: `0 4px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.03)` }}>
       <div className="absolute top-0 left-0 right-0 h-[2px]" style={{ background: `linear-gradient(90deg, transparent, ${accent}, transparent)` }} />
-
-      {/* Header */}
       <div className="flex items-start justify-between p-5 pb-3">
         <div className="flex items-center gap-3">
           {review.discordAvatarUrl ? (
-            <img src={review.discordAvatarUrl} alt="" className="w-10 h-10 rounded-full object-cover ring-2" style={{ ringColor: hexToRgba(accent, 0.4) }} />
+            <img src={review.discordAvatarUrl} alt="" className="w-10 h-10 rounded-full object-cover" />
           ) : (
-            <div
-              className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-extrabold shrink-0 ring-2"
-              style={{ background: `linear-gradient(135deg, ${color}, ${color}99)`, boxShadow: `0 0 12px ${hexToRgba(color, 0.4)}`, outline: `2px solid ${hexToRgba(color, 0.3)}`, outlineOffset: "2px" }}
-            >
+            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-extrabold shrink-0"
+              style={{ background: `linear-gradient(135deg, ${color}, ${color}99)`, boxShadow: `0 0 12px ${hexToRgba(color, 0.4)}`, outline: `2px solid ${hexToRgba(color, 0.3)}`, outlineOffset: "2px" }}>
               {initials}
             </div>
           )}
@@ -88,60 +76,39 @@ function ReviewCard({ review, index }: { review: Review; index: number }) {
         <div className="flex flex-col items-end gap-1">
           <div className="flex items-center gap-0.5">
             {Array.from({ length: 5 }).map((_, i) => (
-              <Star key={i} className="h-3 w-3"
-                fill={i < review.rating ? "#fbbf24" : "none"}
-                style={{ color: i < review.rating ? "#fbbf24" : "rgba(255,255,255,0.1)" }}
-              />
+              <Star key={i} className="h-3 w-3" fill={i < review.rating ? "#fbbf24" : "none"} style={{ color: i < review.rating ? "#fbbf24" : "rgba(255,255,255,0.1)" }} />
             ))}
           </div>
           <p className="text-white/20 text-[9px]">{fmtDate(review.createdAt)}</p>
         </div>
       </div>
-
-      {/* Product tag */}
       {review.product && (
         <div className="px-5 pb-2">
-          <span
-            className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full"
-            style={{ background: hexToRgba(accent, 0.12), border: `1px solid ${hexToRgba(accent, 0.28)}`, color: accent }}
-          >
+          <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full"
+            style={{ background: hexToRgba(accent, 0.12), border: `1px solid ${hexToRgba(accent, 0.28)}`, color: accent }}>
             <Shield className="h-2.5 w-2.5" />
             {review.product}
           </span>
         </div>
       )}
-
-      {/* Content */}
       <div className="px-5 pb-4 flex-1">
-        <div
-          className="relative pl-3 text-white/65 text-xs leading-relaxed space-y-1"
-          style={{ borderLeft: `2px solid ${hexToRgba(accent, 0.35)}` }}
-        >
+        <div className="relative pl-3 text-white/65 text-xs leading-relaxed space-y-1" style={{ borderLeft: `2px solid ${hexToRgba(accent, 0.35)}` }}>
           {lines.map((line, i) => (
             <p key={i} dangerouslySetInnerHTML={{ __html: fmtContent(line) }} />
           ))}
         </div>
       </div>
-
-      {/* Screenshot image */}
       {review.imageUrl && (
         <div className="mx-5 mb-5 rounded-xl overflow-hidden" style={{ aspectRatio: "16/9", border: `1px solid ${hexToRgba(accent, 0.2)}` }}>
           <img src={review.imageUrl} alt="Screenshot" className="w-full h-full object-cover" />
         </div>
       )}
-
-      {/* Footer */}
       <div className="px-5 pb-4 flex items-center justify-between">
         <div className="flex items-center gap-1 text-white/20 text-[10px]">
           <ThumbsUp className="h-3 w-3" />
           Compra verificada
         </div>
-        <div
-          className="w-6 h-6 rounded-full flex items-center justify-center text-lg font-serif leading-none opacity-20"
-          style={{ color: accent }}
-        >
-          "
-        </div>
+        <div className="w-6 h-6 rounded-full flex items-center justify-center text-lg font-serif leading-none opacity-20" style={{ color: accent }}>"</div>
       </div>
     </div>
   );
@@ -151,15 +118,13 @@ export default function ReviewsSection() {
   const [reviews, setReviews] = useState<Review[]>(FALLBACK_REVIEWS);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const loadReviews = () => {
+  useEffect(() => {
     const base = (import.meta.env.BASE_URL ?? "/").replace(/\/$/, "");
     fetch(`${base}/api/reviews`)
       .then((r) => r.ok ? r.json() : null)
       .then((data: Review[] | null) => { if (data && data.length > 0) setReviews(data); })
       .catch(() => {});
-  };
-
-  useEffect(() => { loadReviews(); }, []);
+  }, []);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -193,28 +158,20 @@ export default function ReviewsSection() {
 
   return (
     <section id="reviews" className="py-20 overflow-hidden">
-      {/* Header */}
       <div className="flex flex-col items-center text-center gap-4 mb-10 px-4">
-        <span
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest"
-          style={{ background: "rgba(88,101,242,0.12)", border: "1px solid rgba(88,101,242,0.3)", color: "#7289da" }}
-        >
+        <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest"
+          style={{ background: "rgba(88,101,242,0.12)", border: "1px solid rgba(88,101,242,0.3)", color: "#7289da" }}>
           <MessageSquare className="h-3.5 w-3.5" />
           Opiniones Verificadas
         </span>
-
         <h2 className="text-4xl md:text-5xl font-extrabold text-white leading-tight">
           Lo que dicen nuestros{" "}
           <span style={{ color: "#06b6d4", textShadow: "0 0 24px rgba(6,182,212,0.4)" }}>jugadores</span>
         </h2>
-
-        {/* Stats row */}
         <div className="flex items-center gap-6 mt-2 flex-wrap justify-center">
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-0.5">
-              {[1,2,3,4,5].map(i => (
-                <Star key={i} className="h-4 w-4" fill="#fbbf24" style={{ color: "#fbbf24" }} />
-              ))}
+              {[1,2,3,4,5].map(i => <Star key={i} className="h-4 w-4" fill="#fbbf24" style={{ color: "#fbbf24" }} />)}
             </div>
             <span className="text-white font-extrabold text-lg">{avgRating}</span>
             <span className="text-white/40 text-sm">/ 5</span>
@@ -230,31 +187,15 @@ export default function ReviewsSection() {
             <span>Compras verificadas</span>
           </div>
         </div>
-
       </div>
-
-      {/* Carousel */}
       <div className="relative">
-        <div
-          ref={scrollRef}
-          className="flex gap-4 overflow-x-auto pb-2"
-          style={{
-            scrollbarWidth: "none",
-            msOverflowStyle: "none",
-            paddingLeft: "max(1.5rem, calc((100vw - 1200px) / 2))",
-            paddingRight: "max(1.5rem, calc((100vw - 1200px) / 2))",
-          }}
-        >
-          {doubled.map((r, i) => (
-            <ReviewCard key={`${r.id}-${i}`} review={r} index={i} />
-          ))}
+        <div ref={scrollRef} className="flex gap-4 overflow-x-auto pb-2"
+          style={{ scrollbarWidth: "none", msOverflowStyle: "none", paddingLeft: "max(1.5rem, calc((100vw - 1200px) / 2))", paddingRight: "max(1.5rem, calc((100vw - 1200px) / 2))" }}>
+          {doubled.map((r, i) => <ReviewCard key={`${r.id}-${i}`} review={r} index={i} />)}
         </div>
-
-        {/* Edge fades */}
         <div className="absolute inset-y-0 left-0 w-24 pointer-events-none" style={{ background: "linear-gradient(90deg, #050608 0%, transparent 100%)" }} />
         <div className="absolute inset-y-0 right-0 w-24 pointer-events-none" style={{ background: "linear-gradient(270deg, #050608 0%, transparent 100%)" }} />
       </div>
-
     </section>
   );
 }
