@@ -71,7 +71,7 @@ export default function CartDrawer() {
       try {
         data = JSON.parse(raw) as Record<string, unknown>;
       } catch {
-        throw new Error(`El servidor respondió con un error (${res.status}). Verifica que VITE_API_BASE_URL termine en /api y que Railway esté activo.`);
+        throw new Error(`Error ${res.status} en ${endpoint} — Verifica que VITE_API_BASE_URL termine en /api (ej: https://tu-app.up.railway.app/api).`);
       }
       if (!res.ok) {
         if (data["error"] === "tebex_not_configured" || data["error"] === "products_not_configured") { handleDiscordFallback(); return; }
