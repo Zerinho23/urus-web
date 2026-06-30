@@ -15,7 +15,7 @@ const createReviewSchema = z.object({
   imageUrl: z.string().url().optional().nullable(),
 });
 
-router.get("/api/reviews", async (req, res) => {
+router.get("/reviews", async (req, res) => {
   try {
     const reviews = await db
       .select()
@@ -29,7 +29,7 @@ router.get("/api/reviews", async (req, res) => {
   }
 });
 
-router.post("/api/reviews", async (req, res) => {
+router.post("/reviews", async (req, res) => {
   const parsed = createReviewSchema.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: "Datos inválidos", details: parsed.error.issues });
