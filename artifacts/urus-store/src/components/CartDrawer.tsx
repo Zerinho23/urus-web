@@ -56,12 +56,18 @@ export default function CartDrawer() {
           cancelUrl: `${origin}${base}/?checkout=cancelled`,
         }),
       });
-      const data = await res.json();
-      if (!res.ok) {
-        if (data.error === "tebex_not_configured" || data.error === "products_not_configured") { handleDiscordFallback(); return; }
-        throw new Error(data.message ?? "Error al procesar el pago");
+      const raw = await res.text();
+      let data: Record<string, unknown>;
+      try {
+        data = JSON.parse(raw) as Record<string, unknown>;
+      } catch {
+        throw new Error("El servidor no está disponible. Intenta de nuevo en un momento.");
       }
-      if (data.checkoutUrl) window.location.href = data.checkoutUrl;
+      if (!res.ok) {
+        if (data["error"] === "tebex_not_configured" || data["error"] === "products_not_configured") { handleDiscordFallback(); return; }
+        throw new Error((data["message"] as string | undefined) ?? "Error al procesar el pago");
+      }
+      if (data["checkoutUrl"]) window.location.href = data["checkoutUrl"] as string;
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Error al iniciar el pago";
       setCheckoutError(msg);
