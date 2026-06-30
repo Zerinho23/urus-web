@@ -45,6 +45,7 @@ export default function CartDrawer() {
     setCheckoutLoading(true);
     setCheckoutError("");
     try {
+      const base = (import.meta.env.BASE_URL ?? "/").replace(/\/$/, "");
       const origin = window.location.origin;
       const res = await fetch(`${getApiBase()}/checkout`, {
         method: "POST",
