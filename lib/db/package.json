@@ -1,0 +1,13 @@
+{
+  "name": "@workspace/db",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/schema/index.ts",
+    "./schema": "./src/schema/index.ts"
+  },
+  "dependencies": {
+    "drizzle-orm": "catalog:"
+  }
+}
