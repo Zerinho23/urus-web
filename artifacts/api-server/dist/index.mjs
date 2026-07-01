@@ -132293,7 +132293,7 @@ router3.post("/checkout", async (req, res) => {
         continue;
       }
       const pkgRes = await fetch(`${TEBEX_BASE}/baskets/${ident}/packages`, {
-        method: "PUT",
+        method: "POST",
         headers: tebexHeaders,
         body: JSON.stringify({ package_id: packageId, quantity: item.quantity })
       });
