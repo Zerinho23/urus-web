@@ -132292,18 +132292,11 @@ router3.post("/checkout", async (req, res) => {
         req.log.warn({ itemName: item.name }, "No Tebex package_id configured for item");
         continue;
       }
-      let pkgRes = await fetch(`${TEBEX_BASE}/accounts/${TEBEX_WEBSTORE_ID}/baskets/${ident}/packages`, {
-        method: "POST",
+      const pkgRes = await fetch(`${TEBEX_BASE}/baskets/${ident}/packages`, {
+        method: "PUT",
         headers: tebexHeaders,
         body: JSON.stringify({ package_id: packageId, quantity: item.quantity })
       });
-      if (pkgRes.status === 404 || pkgRes.status === 405) {
-        pkgRes = await fetch(`${TEBEX_BASE}/accounts/${TEBEX_WEBSTORE_ID}/baskets/${ident}/packages`, {
-          method: "PUT",
-          headers: tebexHeaders,
-          body: JSON.stringify({ package_id: packageId, quantity: item.quantity })
-        });
-      }
       if (!pkgRes.ok) {
         const err = await pkgRes.text();
         req.log.error(
