@@ -132280,18 +132280,25 @@ router3.post("/checkout", async (req, res) => {
         req.log.warn({ itemName: item.name }, "No Tebex package_id configured for item");
         continue;
       }
-      const pkgRes = await fetch(`${TEBEX_BASE}/accounts/${TEBEX_WEBSTORE_ID}/baskets/${ident}/packages`, {
+      let pkgRes = await fetch(`${TEBEX_BASE}/accounts/${TEBEX_WEBSTORE_ID}/baskets/${ident}/packages`, {
         method: "POST",
         headers: tebexHeaders,
         body: JSON.stringify({ package_id: packageId, quantity: item.quantity })
       });
+      if (pkgRes.status === 404 || pkgRes.status === 405) {
+        pkgRes = await fetch(`${TEBEX_BASE}/accounts/${TEBEX_WEBSTORE_ID}/baskets/${ident}/packages`, {
+          method: "PUT",
+          headers: tebexHeaders,
+          body: JSON.stringify({ package_id: packageId, quantity: item.quantity })
+        });
+      }
       if (!pkgRes.ok) {
         const err = await pkgRes.text();
         req.log.error(
           { packageId, itemName: item.name, status: pkgRes.status, err: err.slice(0, 300) },
-          "Tebex rejected package \u2014 check that package_id exists in this webstore"
+          "Tebex rejected package"
         );
-        failed.push(item.name);
+        failed.push(`${item.name} (Tebex ${pkgRes.status}: ${err.slice(0, 120)})`);
       } else {
         addedCount++;
         req.log.info({ packageId, itemName: item.name }, "Package added to basket");
