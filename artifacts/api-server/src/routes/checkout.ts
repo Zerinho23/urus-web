@@ -96,10 +96,9 @@ router.post("/checkout", async (req, res) => {
         continue;
       }
 
-      // Tebex Headless: basket creation uses /accounts/{token}/baskets
-      // but adding packages uses /baskets/{ident}/packages (no account prefix)
+      // Tebex Headless: add package via POST /baskets/{ident}/packages (no account prefix)
       const pkgRes = await fetch(`${TEBEX_BASE}/baskets/${ident}/packages`, {
-        method: "PUT",
+        method: "POST",
         headers: tebexHeaders,
         body: JSON.stringify({ package_id: packageId, quantity: item.quantity }),
       });
