@@ -96,19 +96,13 @@ router.post("/checkout", async (req, res) => {
         continue;
       }
 
-      // Try POST first (some Tebex plans), fall back to PUT (Tebex Headless v2)
-      let pkgRes = await fetch(`${TEBEX_BASE}/accounts/${TEBEX_WEBSTORE_ID}/baskets/${ident}/packages`, {
-        method: "POST",
+      // Tebex Headless: basket creation uses /accounts/{token}/baskets
+      // but adding packages uses /baskets/{ident}/packages (no account prefix)
+      const pkgRes = await fetch(`${TEBEX_BASE}/baskets/${ident}/packages`, {
+        method: "PUT",
         headers: tebexHeaders,
         body: JSON.stringify({ package_id: packageId, quantity: item.quantity }),
       });
-      if (pkgRes.status === 404 || pkgRes.status === 405) {
-        pkgRes = await fetch(`${TEBEX_BASE}/accounts/${TEBEX_WEBSTORE_ID}/baskets/${ident}/packages`, {
-          method: "PUT",
-          headers: tebexHeaders,
-          body: JSON.stringify({ package_id: packageId, quantity: item.quantity }),
-        });
-      }
 
       if (!pkgRes.ok) {
         const err = await pkgRes.text();
