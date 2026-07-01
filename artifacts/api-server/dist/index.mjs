@@ -132285,6 +132285,7 @@ router3.post("/checkout", async (req, res) => {
     const skipped = [];
     const failed = [];
     let addedCount = 0;
+    let authRequired = false;
     for (const item of items) {
       const packageId = TEBEX_PACKAGES[item.name];
       if (!packageId) {
@@ -132298,29 +132299,42 @@ router3.post("/checkout", async (req, res) => {
         body: JSON.stringify({ package_id: packageId, quantity: item.quantity })
       });
       if (!pkgRes.ok) {
-        const err = await pkgRes.text();
+        const errText = await pkgRes.text();
         req.log.error(
-          { packageId, itemName: item.name, status: pkgRes.status, err: err.slice(0, 300) },
+          { packageId, itemName: item.name, status: pkgRes.status, err: errText.slice(0, 300) },
           "Tebex rejected package"
         );
-        failed.push(`${item.name} (Tebex ${pkgRes.status}: ${err.slice(0, 120)})`);
+        if (pkgRes.status === 422 && errText.toLowerCase().includes("login")) {
+          authRequired = true;
+          addedCount++;
+          req.log.info({ packageId, itemName: item.name }, "Package needs auth on Tebex checkout \u2014 redirecting anyway");
+        } else {
+          failed.push(`${item.name} (Tebex ${pkgRes.status}: ${errText.slice(0, 120)})`);
+        }
       } else {
         addedCount++;
         req.log.info({ packageId, itemName: item.name }, "Package added to basket");
       }
     }
-    if (addedCount === 0) {
-      const allSkipped = skipped.length === items.length;
+    if (addedCount === 0 && skipped.length === items.length) {
       res.status(422).json({
         error: "products_not_configured",
-        message: allSkipped ? "Estos productos a\xFAn no est\xE1n vinculados a Tebex. Contacta al soporte por Discord." : "No se pudieron agregar los productos al basket de Tebex (package_id inv\xE1lido o no pertenece a este webstore). Revisa los IDs en tebex-packages.ts.",
-        skipped,
+        message: "Estos productos a\xFAn no est\xE1n vinculados a Tebex. Contacta al soporte por Discord.",
+        skipped
+      });
+      return;
+    }
+    if (addedCount === 0 && failed.length > 0) {
+      res.status(422).json({
+        error: "products_not_configured",
+        message: "No se pudieron agregar los productos al basket de Tebex. Revisa los IDs en tebex-packages.ts.",
         failed
       });
       return;
     }
     const checkoutUrl = links?.checkout ?? `https://checkout.tebex.io/checkout/${ident}`;
-    res.json({ checkoutUrl, basketIdent: ident, skipped, failed });
+    req.log.info({ checkoutUrl, authRequired, skipped, failed }, "Redirecting to Tebex checkout");
+    res.json({ checkoutUrl, basketIdent: ident, skipped, failed, authRequired });
   } catch (err) {
     req.log.error({ err }, "Error during Tebex checkout");
     res.status(500).json({ error: "Error interno al procesar el checkout" });
