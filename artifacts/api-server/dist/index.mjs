@@ -132267,8 +132267,20 @@ router3.post("/checkout", async (req, res) => {
       });
       return;
     }
-    const basketData = await basketRes.json();
-    const { ident, links } = basketData.data;
+    const basketRaw = await basketRes.json();
+    req.log.info({ basketRaw }, "Tebex basket raw response");
+    const basketData = basketRaw["data"] ?? basketRaw;
+    const ident = basketData["ident"];
+    const links = basketData["links"];
+    if (!ident) {
+      req.log.error({ basketRaw }, "Tebex basket missing ident");
+      res.status(502).json({
+        error: "Tebex basket sin ident",
+        detail: "Respuesta inesperada de Tebex al crear basket",
+        basketRaw
+      });
+      return;
+    }
     req.log.info({ ident, links }, "Tebex basket created");
     const skipped = [];
     const failed = [];
