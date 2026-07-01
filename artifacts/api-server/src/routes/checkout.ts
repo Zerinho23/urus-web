@@ -83,7 +83,7 @@ router.post("/checkout", async (req, res) => {
         continue;
       }
 
-      const pkgRes = await fetch(`${TEBEX_BASE}/baskets/${ident}/packages`, {
+      const pkgRes = await fetch(`${TEBEX_BASE}/accounts/${TEBEX_WEBSTORE_ID}/baskets/${ident}/packages`, {
         method: "POST",
         headers: tebexHeaders,
         body: JSON.stringify({ package_id: packageId, quantity: item.quantity }),
