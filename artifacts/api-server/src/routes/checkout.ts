@@ -87,6 +87,7 @@ router.post("/checkout", async (req, res) => {
     const skipped: string[] = [];
     const failed: string[] = [];
     let addedCount = 0;
+    let authRequired = false;
 
     for (const item of items) {
       const packageId = TEBEX_PACKAGES[item.name];
@@ -104,34 +105,49 @@ router.post("/checkout", async (req, res) => {
       });
 
       if (!pkgRes.ok) {
-        const err = await pkgRes.text();
+        const errText = await pkgRes.text();
         req.log.error(
-          { packageId, itemName: item.name, status: pkgRes.status, err: err.slice(0, 300) },
+          { packageId, itemName: item.name, status: pkgRes.status, err: errText.slice(0, 300) },
           "Tebex rejected package"
         );
-        failed.push(`${item.name} (Tebex ${pkgRes.status}: ${err.slice(0, 120)})`);
+        // 422 "User must login" = Tebex requires game-account auth on their checkout page
+        // Treat as success path — user will authenticate directly on Tebex
+        if (pkgRes.status === 422 && errText.toLowerCase().includes("login")) {
+          authRequired = true;
+          addedCount++;
+          req.log.info({ packageId, itemName: item.name }, "Package needs auth on Tebex checkout — redirecting anyway");
+        } else {
+          failed.push(`${item.name} (Tebex ${pkgRes.status}: ${errText.slice(0, 120)})`);
+        }
       } else {
         addedCount++;
         req.log.info({ packageId, itemName: item.name }, "Package added to basket");
       }
     }
 
-    // Nothing made it into the basket — don't redirect to an empty Tebex page
-    if (addedCount === 0) {
-      const allSkipped = skipped.length === items.length;
+    // Only block checkout if ALL items are unconfigured (packageId = 0)
+    if (addedCount === 0 && skipped.length === items.length) {
       res.status(422).json({
         error: "products_not_configured",
-        message: allSkipped
-          ? "Estos productos aún no están vinculados a Tebex. Contacta al soporte por Discord."
-          : "No se pudieron agregar los productos al basket de Tebex (package_id inválido o no pertenece a este webstore). Revisa los IDs en tebex-packages.ts.",
+        message: "Estos productos aún no están vinculados a Tebex. Contacta al soporte por Discord.",
         skipped,
+      });
+      return;
+    }
+
+    // Non-auth hard failures with nothing added → block
+    if (addedCount === 0 && failed.length > 0) {
+      res.status(422).json({
+        error: "products_not_configured",
+        message: "No se pudieron agregar los productos al basket de Tebex. Revisa los IDs en tebex-packages.ts.",
         failed,
       });
       return;
     }
 
     const checkoutUrl = links?.checkout ?? `https://checkout.tebex.io/checkout/${ident}`;
-    res.json({ checkoutUrl, basketIdent: ident, skipped, failed });
+    req.log.info({ checkoutUrl, authRequired, skipped, failed }, "Redirecting to Tebex checkout");
+    res.json({ checkoutUrl, basketIdent: ident, skipped, failed, authRequired });
   } catch (err) {
     req.log.error({ err }, "Error during Tebex checkout");
     res.status(500).json({ error: "Error interno al procesar el checkout" });
