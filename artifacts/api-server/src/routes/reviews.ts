@@ -1,9 +1,20 @@
 import { Router } from "express";
+import rateLimit from "express-rate-limit";
 import { db, reviewsTable } from "@workspace/db";
 import { desc } from "drizzle-orm";
 import { z } from "zod/v4";
 
 const router = Router();
+
+// Reviews are not tied to a verified Discord identity (no OAuth), so anyone
+// could otherwise spam or spoof reviews. Rate-limit submissions hard per IP.
+const createReviewLimiter = rateLimit({
+  windowMs: 60 * 60_000,
+  limit: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Demasiadas reseñas enviadas. Intenta de nuevo más tarde." },
+});
 
 const createReviewSchema = z.object({
   discordUsername: z.string().min(1).max(64),
@@ -29,7 +40,7 @@ router.get("/reviews", async (req, res) => {
   }
 });
 
-router.post("/reviews", async (req, res) => {
+router.post("/reviews", createReviewLimiter, async (req, res) => {
   const parsed = createReviewSchema.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: "Datos inválidos", details: parsed.error.issues });

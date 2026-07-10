@@ -1,3 +1,5 @@
+import { Link } from "wouter";
+
 const YTIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
     <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
@@ -53,22 +55,20 @@ export default function Footer() {
         <div>
           <h4 className="text-white font-semibold text-sm mb-4">Navegación</h4>
           <ul className="flex flex-col gap-2">
-            {["Inicio", "Productos", "Afiliados", "Términos y condiciones"].map((item) => (
-              <li key={item}>
-                <a href="#" className="text-white/40 text-sm hover:text-white transition-colors">{item}</a>
-              </li>
-            ))}
+            <li><a href="#" className="text-white/40 text-sm hover:text-white transition-colors">Inicio</a></li>
+            <li><a href="#products" className="text-white/40 text-sm hover:text-white transition-colors">Productos</a></li>
+            <li><a href="https://discord.gg/panelurus" target="_blank" rel="noopener noreferrer" className="text-white/40 text-sm hover:text-white transition-colors">Afiliados</a></li>
+            <li><Link href="/terminos" className="text-white/40 text-sm hover:text-white transition-colors">Términos y condiciones</Link></li>
           </ul>
         </div>
 
         <div>
           <h4 className="text-white font-semibold text-sm mb-4">Soporte</h4>
           <ul className="flex flex-col gap-2">
-            {["Discord", "FAQ", "Política de reembolso", "Contacto"].map((item) => (
-              <li key={item}>
-                <a href="#" className="text-white/40 text-sm hover:text-white transition-colors">{item}</a>
-              </li>
-            ))}
+            <li><a href="https://discord.gg/panelurus" target="_blank" rel="noopener noreferrer" className="text-white/40 text-sm hover:text-white transition-colors">Discord</a></li>
+            <li><a href="https://discord.gg/panelurus" target="_blank" rel="noopener noreferrer" className="text-white/40 text-sm hover:text-white transition-colors">FAQ</a></li>
+            <li><Link href="/terminos" className="text-white/40 text-sm hover:text-white transition-colors">Política de reembolso</Link></li>
+            <li><a href="https://discord.gg/panelurus" target="_blank" rel="noopener noreferrer" className="text-white/40 text-sm hover:text-white transition-colors">Contacto</a></li>
           </ul>
         </div>
       </div>
@@ -76,8 +76,8 @@ export default function Footer() {
       <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
         <p className="text-white/30 text-xs">© {year} Urus Store. Todos los derechos reservados.</p>
         <div className="flex items-center gap-4">
-          <a href="#" className="text-white/30 text-xs hover:text-white/60 transition-colors">Política de privacidad</a>
-          <a href="#" className="text-white/30 text-xs hover:text-white/60 transition-colors">Términos de uso</a>
+          <Link href="/privacidad" className="text-white/30 text-xs hover:text-white/60 transition-colors">Política de privacidad</Link>
+          <Link href="/terminos" className="text-white/30 text-xs hover:text-white/60 transition-colors">Términos de uso</Link>
         </div>
       </div>
     </footer>

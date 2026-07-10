@@ -1,4 +1,5 @@
 import { Router } from "express";
+import rateLimit from "express-rate-limit";
 import { z } from "zod/v4";
 import { TEBEX_PACKAGES } from "../tebex-packages";
 
@@ -7,6 +8,15 @@ const router = Router();
 const TEBEX_SECRET = process.env["TEBEX_SECRET_KEY"];
 const TEBEX_WEBSTORE_ID = process.env["TEBEX_WEBSTORE_ID"];
 const TEBEX_BASE = "https://headless.tebex.io/api";
+
+// Prevent abuse/DoS of the Tebex basket-creation flow (each call hits Tebex's API).
+const checkoutLimiter = rateLimit({
+  windowMs: 60_000,
+  limit: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Demasiadas solicitudes de pago. Intenta de nuevo en un momento." },
+});
 
 const checkoutSchema = z.object({
   items: z.array(
@@ -19,7 +29,7 @@ const checkoutSchema = z.object({
   cancelUrl: z.string().url().optional(),
 });
 
-router.post("/checkout", async (req, res) => {
+router.post("/checkout", checkoutLimiter, async (req, res) => {
   if (!TEBEX_SECRET || !TEBEX_WEBSTORE_ID) {
     res.status(503).json({
       error: "tebex_not_configured",

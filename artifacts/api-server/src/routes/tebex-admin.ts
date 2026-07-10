@@ -3,9 +3,20 @@ import { Router } from "express";
 const router = Router();
 
 const TEBEX_WEBSTORE_ID = process.env["TEBEX_WEBSTORE_ID"];
+const ADMIN_TOKEN = process.env["ADMIN_TOKEN"];
 const TEBEX_BASE = "https://headless.tebex.io/api";
 
 router.get("/tebex/packages", async (req, res) => {
+  // This lists every package in the Tebex store — internal info, not meant
+  // for public consumption. Require an admin token if one is configured.
+  if (ADMIN_TOKEN && req.header("x-admin-token") !== ADMIN_TOKEN) {
+    res.status(401).json({ error: "No autorizado" });
+    return;
+  }
+  if (!ADMIN_TOKEN) {
+    req.log.warn("ADMIN_TOKEN is not set — /api/tebex/packages is publicly accessible to anyone.");
+  }
+
   if (!TEBEX_WEBSTORE_ID) {
     res.status(503).json({ error: "TEBEX_WEBSTORE_ID no configurado" });
     return;
