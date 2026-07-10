@@ -1,11 +1,10 @@
 packages:
-    - 'artifacts/*'
-    - 'lib/*'
+  - 'artifacts/*'
+  - 'lib/*'
 
-  catalog:
-    '@tanstack/react-query': ^5.90.21
-    '@types/node': ^20.0.0
-    drizzle-orm: ^0.45.2
-    drizzle-zod: ^0.7.0
-    zod: ^3.25.76
-  
+catalog:
+  '@tanstack/react-query': ^5.90.21
+  '@types/node': ^20.0.0
+  drizzle-orm: ^0.45.2
+  drizzle-zod: ^0.7.0
+  zod: ^3.25.76

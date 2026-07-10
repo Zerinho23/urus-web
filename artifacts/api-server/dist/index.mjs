@@ -1,10 +1,11 @@
 import { createRequire as __bannerCrReq } from 'node:module';
 import __bannerPath from 'node:path';
 import __bannerUrl from 'node:url';
+
 globalThis.require = __bannerCrReq(import.meta.url);
 globalThis.__filename = __bannerUrl.fileURLToPath(import.meta.url);
 globalThis.__dirname = __bannerPath.dirname(globalThis.__filename);
-
+    
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -167,7 +168,7 @@ var require_common = __commonJS({
     function setup(env) {
       createDebug.debug = createDebug;
       createDebug.default = createDebug;
-      createDebug.coerce = coerce2;
+      createDebug.coerce = coerce;
       createDebug.disable = disable;
       createDebug.enable = enable;
       createDebug.enabled = enabled;
@@ -322,7 +323,7 @@ var require_common = __commonJS({
         }
         return false;
       }
-      function coerce2(val) {
+      function coerce(val) {
         if (val instanceof Error) {
           return val.stack || val.message;
         }
@@ -1807,7 +1808,7 @@ var require_utf32 = __commonJS({
     }
     Utf32Encoder.prototype.write = function(str) {
       var src = Buffer2.from(str, "ucs2");
-      var dst = Buffer2.alloc(src.length * 2);
+      var dst = Buffer2.alloc(src.length * 2 + 4);
       var write32 = this.isLE ? dst.writeUInt32LE : dst.writeUInt32BE;
       var offset = 0;
       for (var i = 0; i < src.length; i += 2) {
@@ -1874,9 +1875,9 @@ var require_utf32 = __commonJS({
         }
         if (overflow.length === 4) {
           if (isLE) {
-            codepoint = overflow[i] | overflow[i + 1] << 8 | overflow[i + 2] << 16 | overflow[i + 3] << 24;
+            codepoint = overflow[0] | overflow[1] << 8 | overflow[2] << 16 | overflow[3] << 24;
           } else {
-            codepoint = overflow[i + 3] | overflow[i + 2] << 8 | overflow[i + 1] << 16 | overflow[i] << 24;
+            codepoint = overflow[3] | overflow[2] << 8 | overflow[1] << 16 | overflow[0] << 24;
           }
           overflow.length = 0;
           offset = _writeCodepoint(dst, offset, codepoint, badChar);
@@ -1911,7 +1912,11 @@ var require_utf32 = __commonJS({
       return offset;
     }
     Utf32Decoder.prototype.end = function() {
+      if (this.overflow.length === 0) {
+        return;
+      }
       this.overflow.length = 0;
+      return String.fromCharCode(this.badChar);
     };
     exports2.utf32 = Utf32AutoCodec;
     exports2.ucs4 = "utf32";
@@ -2536,6 +2541,8 @@ var require_sbcs_data = __commonJS({
       elot928: "iso88597",
       hebrew: "iso88598",
       hebrew8: "iso88598",
+      iso88598i: "iso88598",
+      iso88598e: "iso88598",
       turkish: "iso88599",
       turkish8: "iso88599",
       thai: "iso885911",
@@ -28336,7 +28343,7 @@ var require_pino = __commonJS({
     function pinoBundlerAbsolutePath(p) {
       try {
         const path = __require("path");
-        const outputDir = __dirname;
+        const outputDir = "/tmp/urus-dist-check/artifacts/api-server/dist";
         return path.resolve(outputDir, p.replace(/^\.\//, ""));
       } catch (e) {
         const f = new Function("p", "return new URL(p, import.meta.url).pathname");
@@ -109604,118 +109611,6 @@ var import_express6 = __toESM(require_express2(), 1);
 // src/routes/health.ts
 var import_express = __toESM(require_express2(), 1);
 
-// node_modules/zod/v3/external.js
-var external_exports = {};
-__export(external_exports, {
-  BRAND: () => BRAND,
-  DIRTY: () => DIRTY,
-  EMPTY_PATH: () => EMPTY_PATH,
-  INVALID: () => INVALID,
-  NEVER: () => NEVER,
-  OK: () => OK,
-  ParseStatus: () => ParseStatus,
-  Schema: () => ZodType,
-  ZodAny: () => ZodAny,
-  ZodArray: () => ZodArray,
-  ZodBigInt: () => ZodBigInt,
-  ZodBoolean: () => ZodBoolean,
-  ZodBranded: () => ZodBranded,
-  ZodCatch: () => ZodCatch,
-  ZodDate: () => ZodDate,
-  ZodDefault: () => ZodDefault,
-  ZodDiscriminatedUnion: () => ZodDiscriminatedUnion,
-  ZodEffects: () => ZodEffects,
-  ZodEnum: () => ZodEnum,
-  ZodError: () => ZodError,
-  ZodFirstPartyTypeKind: () => ZodFirstPartyTypeKind,
-  ZodFunction: () => ZodFunction,
-  ZodIntersection: () => ZodIntersection,
-  ZodIssueCode: () => ZodIssueCode,
-  ZodLazy: () => ZodLazy,
-  ZodLiteral: () => ZodLiteral,
-  ZodMap: () => ZodMap,
-  ZodNaN: () => ZodNaN,
-  ZodNativeEnum: () => ZodNativeEnum,
-  ZodNever: () => ZodNever,
-  ZodNull: () => ZodNull,
-  ZodNullable: () => ZodNullable,
-  ZodNumber: () => ZodNumber,
-  ZodObject: () => ZodObject,
-  ZodOptional: () => ZodOptional,
-  ZodParsedType: () => ZodParsedType,
-  ZodPipeline: () => ZodPipeline,
-  ZodPromise: () => ZodPromise,
-  ZodReadonly: () => ZodReadonly,
-  ZodRecord: () => ZodRecord,
-  ZodSchema: () => ZodType,
-  ZodSet: () => ZodSet,
-  ZodString: () => ZodString,
-  ZodSymbol: () => ZodSymbol,
-  ZodTransformer: () => ZodEffects,
-  ZodTuple: () => ZodTuple,
-  ZodType: () => ZodType,
-  ZodUndefined: () => ZodUndefined,
-  ZodUnion: () => ZodUnion,
-  ZodUnknown: () => ZodUnknown,
-  ZodVoid: () => ZodVoid,
-  addIssueToContext: () => addIssueToContext,
-  any: () => anyType,
-  array: () => arrayType,
-  bigint: () => bigIntType,
-  boolean: () => booleanType,
-  coerce: () => coerce,
-  custom: () => custom,
-  date: () => dateType,
-  datetimeRegex: () => datetimeRegex,
-  defaultErrorMap: () => en_default,
-  discriminatedUnion: () => discriminatedUnionType,
-  effect: () => effectsType,
-  enum: () => enumType,
-  function: () => functionType,
-  getErrorMap: () => getErrorMap,
-  getParsedType: () => getParsedType,
-  instanceof: () => instanceOfType,
-  intersection: () => intersectionType,
-  isAborted: () => isAborted,
-  isAsync: () => isAsync,
-  isDirty: () => isDirty,
-  isValid: () => isValid,
-  late: () => late,
-  lazy: () => lazyType,
-  literal: () => literalType,
-  makeIssue: () => makeIssue,
-  map: () => mapType,
-  nan: () => nanType,
-  nativeEnum: () => nativeEnumType,
-  never: () => neverType,
-  null: () => nullType,
-  nullable: () => nullableType,
-  number: () => numberType,
-  object: () => objectType,
-  objectUtil: () => objectUtil,
-  oboolean: () => oboolean,
-  onumber: () => onumber,
-  optional: () => optionalType,
-  ostring: () => ostring,
-  pipeline: () => pipelineType,
-  preprocess: () => preprocessType,
-  promise: () => promiseType,
-  quotelessJson: () => quotelessJson,
-  record: () => recordType,
-  set: () => setType,
-  setErrorMap: () => setErrorMap,
-  strictObject: () => strictObjectType,
-  string: () => stringType,
-  symbol: () => symbolType,
-  transformer: () => effectsType,
-  tuple: () => tupleType,
-  undefined: () => undefinedType,
-  union: () => unionType,
-  unknown: () => unknownType,
-  util: () => util,
-  void: () => voidType
-});
-
 // node_modules/zod/v3/helpers/util.js
 var util;
 (function(util2) {
@@ -109869,10 +109764,6 @@ var ZodIssueCode = util.arrayToEnum([
   "not_multiple_of",
   "not_finite"
 ]);
-var quotelessJson = (obj) => {
-  const json3 = JSON.stringify(obj, null, 2);
-  return json3.replace(/"([^"]+)":/g, "$1:");
-};
 var ZodError = class _ZodError extends Error {
   get errors() {
     return this.issues;
@@ -110073,9 +109964,6 @@ var en_default = errorMap;
 
 // node_modules/zod/v3/errors.js
 var overrideErrorMap = en_default;
-function setErrorMap(map2) {
-  overrideErrorMap = map2;
-}
 function getErrorMap() {
   return overrideErrorMap;
 }
@@ -110106,7 +109994,6 @@ var makeIssue = (params) => {
     message: errorMessage
   };
 };
-var EMPTY_PATH = [];
 function addIssueToContext(ctx, issueData) {
   const overrideMap = getErrorMap();
   const issue2 = makeIssue({
@@ -113432,7 +113319,6 @@ ZodNaN.create = (params) => {
     ...processCreateParams(params)
   });
 };
-var BRAND = /* @__PURE__ */ Symbol("zod_brand");
 var ZodBranded = class extends ZodType {
   _parse(input) {
     const { ctx } = this._processInputParams(input);
@@ -113524,33 +113410,6 @@ ZodReadonly.create = (type, params) => {
     ...processCreateParams(params)
   });
 };
-function cleanParams(params, data) {
-  const p = typeof params === "function" ? params(data) : typeof params === "string" ? { message: params } : params;
-  const p2 = typeof p === "string" ? { message: p } : p;
-  return p2;
-}
-function custom(check2, _params = {}, fatal) {
-  if (check2)
-    return ZodAny.create().superRefine((data, ctx) => {
-      const r = check2(data);
-      if (r instanceof Promise) {
-        return r.then((r2) => {
-          if (!r2) {
-            const params = cleanParams(_params, data);
-            const _fatal = params.fatal ?? fatal ?? true;
-            ctx.addIssue({ code: "custom", ...params, fatal: _fatal });
-          }
-        });
-      }
-      if (!r) {
-        const params = cleanParams(_params, data);
-        const _fatal = params.fatal ?? fatal ?? true;
-        ctx.addIssue({ code: "custom", ...params, fatal: _fatal });
-      }
-      return;
-    });
-  return ZodAny.create();
-}
 var late = {
   object: ZodObject.lazycreate
 };
@@ -113593,9 +113452,6 @@ var ZodFirstPartyTypeKind;
   ZodFirstPartyTypeKind2["ZodPipeline"] = "ZodPipeline";
   ZodFirstPartyTypeKind2["ZodReadonly"] = "ZodReadonly";
 })(ZodFirstPartyTypeKind || (ZodFirstPartyTypeKind = {}));
-var instanceOfType = (cls, params = {
-  message: `Input not instance of ${cls.name}`
-}) => custom((data) => data instanceof cls, params);
 var stringType = ZodString.create;
 var numberType = ZodNumber.create;
 var nanType = ZodNaN.create;
@@ -113630,20 +113486,6 @@ var optionalType = ZodOptional.create;
 var nullableType = ZodNullable.create;
 var preprocessType = ZodEffects.createWithPreprocess;
 var pipelineType = ZodPipeline.create;
-var ostring = () => stringType().optional();
-var onumber = () => numberType().optional();
-var oboolean = () => booleanType().optional();
-var coerce = {
-  string: ((arg) => ZodString.create({ ...arg, coerce: true })),
-  number: ((arg) => ZodNumber.create({ ...arg, coerce: true })),
-  boolean: ((arg) => ZodBoolean.create({
-    ...arg,
-    coerce: true
-  })),
-  bigint: ((arg) => ZodBigInt.create({ ...arg, coerce: true })),
-  date: ((arg) => ZodDate.create({ ...arg, coerce: true }))
-};
-var NEVER = INVALID;
 
 // node_modules/@workspace/api-zod/src/generated/api.ts
 var HealthCheckResponse = objectType({
@@ -120687,280 +120529,13 @@ __export(schema_exports, {
   reviewsTable: () => reviewsTable
 });
 
-// node_modules/drizzle-zod/index.mjs
-var CONSTANTS = {
-  INT8_MIN: -128,
-  INT8_MAX: 127,
-  INT8_UNSIGNED_MAX: 255,
-  INT16_MIN: -32768,
-  INT16_MAX: 32767,
-  INT16_UNSIGNED_MAX: 65535,
-  INT24_MIN: -8388608,
-  INT24_MAX: 8388607,
-  INT24_UNSIGNED_MAX: 16777215,
-  INT32_MIN: -2147483648,
-  INT32_MAX: 2147483647,
-  INT32_UNSIGNED_MAX: 4294967295,
-  INT48_MIN: -140737488355328,
-  INT48_MAX: 140737488355327,
-  INT48_UNSIGNED_MAX: 281474976710655,
-  INT64_MIN: -9223372036854775808n,
-  INT64_MAX: 9223372036854775807n,
-  INT64_UNSIGNED_MAX: 18446744073709551615n
-};
-function isColumnType(column, columnTypes) {
-  return columnTypes.includes(column.columnType);
-}
-function isWithEnum(column) {
-  return "enumValues" in column && Array.isArray(column.enumValues) && column.enumValues.length > 0;
-}
-var literalSchema = external_exports.union([external_exports.string(), external_exports.number(), external_exports.boolean(), external_exports.null()]);
-var jsonSchema = external_exports.union([literalSchema, external_exports.record(external_exports.any()), external_exports.array(external_exports.any())]);
-var bufferSchema = external_exports.custom((v) => v instanceof Buffer);
-function columnToSchema(column, factory) {
-  const z$1 = factory?.zodInstance ?? external_exports;
-  const coerce2 = factory?.coerce ?? {};
-  let schema;
-  if (isWithEnum(column)) {
-    schema = column.enumValues.length ? z$1.enum(column.enumValues) : z$1.string();
-  }
-  if (!schema) {
-    if (isColumnType(column, ["PgGeometry", "PgPointTuple"])) {
-      schema = z$1.tuple([z$1.number(), z$1.number()]);
-    } else if (isColumnType(column, ["PgGeometryObject", "PgPointObject"])) {
-      schema = z$1.object({ x: z$1.number(), y: z$1.number() });
-    } else if (isColumnType(column, ["PgHalfVector", "PgVector"])) {
-      schema = z$1.array(z$1.number());
-      schema = column.dimensions ? schema.length(column.dimensions) : schema;
-    } else if (isColumnType(column, ["PgLine"])) {
-      schema = z$1.tuple([z$1.number(), z$1.number(), z$1.number()]);
-    } else if (isColumnType(column, ["PgLineABC"])) {
-      schema = z$1.object({
-        a: z$1.number(),
-        b: z$1.number(),
-        c: z$1.number()
-      });
-    } else if (isColumnType(column, ["PgArray"])) {
-      schema = z$1.array(columnToSchema(column.baseColumn, z$1));
-      schema = column.size ? schema.length(column.size) : schema;
-    } else if (column.dataType === "array") {
-      schema = z$1.array(z$1.any());
-    } else if (column.dataType === "number") {
-      schema = numberColumnToSchema(column, z$1, coerce2);
-    } else if (column.dataType === "bigint") {
-      schema = bigintColumnToSchema(column, z$1, coerce2);
-    } else if (column.dataType === "boolean") {
-      schema = coerce2 === true || coerce2.boolean ? z$1.coerce.boolean() : z$1.boolean();
-    } else if (column.dataType === "date") {
-      schema = coerce2 === true || coerce2.date ? z$1.coerce.date() : z$1.date();
-    } else if (column.dataType === "string") {
-      schema = stringColumnToSchema(column, z$1, coerce2);
-    } else if (column.dataType === "json") {
-      schema = jsonSchema;
-    } else if (column.dataType === "custom") {
-      schema = z$1.any();
-    } else if (column.dataType === "buffer") {
-      schema = bufferSchema;
-    }
-  }
-  if (!schema) {
-    schema = z$1.any();
-  }
-  return schema;
-}
-function numberColumnToSchema(column, z, coerce2) {
-  let unsigned = column.getSQLType().includes("unsigned");
-  let min;
-  let max;
-  let integer3 = false;
-  if (isColumnType(column, ["MySqlTinyInt", "SingleStoreTinyInt"])) {
-    min = unsigned ? 0 : CONSTANTS.INT8_MIN;
-    max = unsigned ? CONSTANTS.INT8_UNSIGNED_MAX : CONSTANTS.INT8_MAX;
-    integer3 = true;
-  } else if (isColumnType(column, [
-    "PgSmallInt",
-    "PgSmallSerial",
-    "MySqlSmallInt",
-    "SingleStoreSmallInt"
-  ])) {
-    min = unsigned ? 0 : CONSTANTS.INT16_MIN;
-    max = unsigned ? CONSTANTS.INT16_UNSIGNED_MAX : CONSTANTS.INT16_MAX;
-    integer3 = true;
-  } else if (isColumnType(column, [
-    "PgReal",
-    "MySqlFloat",
-    "MySqlMediumInt",
-    "SingleStoreMediumInt",
-    "SingleStoreFloat"
-  ])) {
-    min = unsigned ? 0 : CONSTANTS.INT24_MIN;
-    max = unsigned ? CONSTANTS.INT24_UNSIGNED_MAX : CONSTANTS.INT24_MAX;
-    integer3 = isColumnType(column, ["MySqlMediumInt", "SingleStoreMediumInt"]);
-  } else if (isColumnType(column, [
-    "PgInteger",
-    "PgSerial",
-    "MySqlInt",
-    "SingleStoreInt"
-  ])) {
-    min = unsigned ? 0 : CONSTANTS.INT32_MIN;
-    max = unsigned ? CONSTANTS.INT32_UNSIGNED_MAX : CONSTANTS.INT32_MAX;
-    integer3 = true;
-  } else if (isColumnType(column, [
-    "PgDoublePrecision",
-    "MySqlReal",
-    "MySqlDouble",
-    "SingleStoreReal",
-    "SingleStoreDouble",
-    "SQLiteReal"
-  ])) {
-    min = unsigned ? 0 : CONSTANTS.INT48_MIN;
-    max = unsigned ? CONSTANTS.INT48_UNSIGNED_MAX : CONSTANTS.INT48_MAX;
-  } else if (isColumnType(column, [
-    "PgBigInt53",
-    "PgBigSerial53",
-    "MySqlBigInt53",
-    "MySqlSerial",
-    "SingleStoreBigInt53",
-    "SingleStoreSerial",
-    "SQLiteInteger"
-  ])) {
-    unsigned = unsigned || isColumnType(column, ["MySqlSerial", "SingleStoreSerial"]);
-    min = unsigned ? 0 : Number.MIN_SAFE_INTEGER;
-    max = Number.MAX_SAFE_INTEGER;
-    integer3 = true;
-  } else if (isColumnType(column, ["MySqlYear", "SingleStoreYear"])) {
-    min = 1901;
-    max = 2155;
-    integer3 = true;
-  } else {
-    min = Number.MIN_SAFE_INTEGER;
-    max = Number.MAX_SAFE_INTEGER;
-  }
-  let schema = coerce2 === true || coerce2?.number ? z.coerce.number() : z.number();
-  schema = schema.min(min).max(max);
-  return integer3 ? schema.int() : schema;
-}
-function bigintColumnToSchema(column, z, coerce2) {
-  const unsigned = column.getSQLType().includes("unsigned");
-  const min = unsigned ? 0n : CONSTANTS.INT64_MIN;
-  const max = unsigned ? CONSTANTS.INT64_UNSIGNED_MAX : CONSTANTS.INT64_MAX;
-  const schema = coerce2 === true || coerce2?.bigint ? z.coerce.bigint() : z.bigint();
-  return schema.min(min).max(max);
-}
-function stringColumnToSchema(column, z, coerce2) {
-  if (isColumnType(column, ["PgUUID"])) {
-    return z.string().uuid();
-  }
-  let max;
-  let regex;
-  let fixed = false;
-  if (isColumnType(column, ["PgVarchar", "SQLiteText"])) {
-    max = column.length;
-  } else if (isColumnType(column, ["MySqlVarChar", "SingleStoreVarChar"])) {
-    max = column.length ?? CONSTANTS.INT16_UNSIGNED_MAX;
-  } else if (isColumnType(column, ["MySqlText", "SingleStoreText"])) {
-    if (column.textType === "longtext") {
-      max = CONSTANTS.INT32_UNSIGNED_MAX;
-    } else if (column.textType === "mediumtext") {
-      max = CONSTANTS.INT24_UNSIGNED_MAX;
-    } else if (column.textType === "text") {
-      max = CONSTANTS.INT16_UNSIGNED_MAX;
-    } else {
-      max = CONSTANTS.INT8_UNSIGNED_MAX;
-    }
-  }
-  if (isColumnType(column, [
-    "PgChar",
-    "MySqlChar",
-    "SingleStoreChar"
-  ])) {
-    max = column.length;
-    fixed = true;
-  }
-  if (isColumnType(column, ["PgBinaryVector"])) {
-    regex = /^[01]+$/;
-    max = column.dimensions;
-  }
-  let schema = coerce2 === true || coerce2?.string ? z.coerce.string() : z.string();
-  schema = regex ? schema.regex(regex) : schema;
-  return max && fixed ? schema.length(max) : max ? schema.max(max) : schema;
-}
-function getColumns(tableLike) {
-  return isTable(tableLike) ? getTableColumns(tableLike) : getViewSelectedFields(tableLike);
-}
-function handleColumns(columns, refinements, conditions, factory) {
-  const columnSchemas = {};
-  for (const [key, selected] of Object.entries(columns)) {
-    if (!is(selected, Column) && !is(selected, SQL) && !is(selected, SQL.Aliased) && typeof selected === "object") {
-      const columns2 = isTable(selected) || isView(selected) ? getColumns(selected) : selected;
-      columnSchemas[key] = handleColumns(columns2, refinements[key] ?? {}, conditions, factory);
-      continue;
-    }
-    const refinement = refinements[key];
-    if (refinement !== void 0 && typeof refinement !== "function") {
-      columnSchemas[key] = refinement;
-      continue;
-    }
-    const column = is(selected, Column) ? selected : void 0;
-    const schema = column ? columnToSchema(column, factory) : external_exports.any();
-    const refined = typeof refinement === "function" ? refinement(schema) : schema;
-    if (conditions.never(column)) {
-      continue;
-    } else {
-      columnSchemas[key] = refined;
-    }
-    if (column) {
-      if (conditions.nullable(column)) {
-        columnSchemas[key] = columnSchemas[key].nullable();
-      }
-      if (conditions.optional(column)) {
-        columnSchemas[key] = columnSchemas[key].optional();
-      }
-    }
-  }
-  return external_exports.object(columnSchemas);
-}
-var insertConditions = {
-  never: (column) => column?.generated?.type === "always" || column?.generatedIdentity?.type === "always",
-  optional: (column) => !column.notNull || column.notNull && column.hasDefault,
-  nullable: (column) => !column.notNull
-};
-var createInsertSchema = (entity, refine2) => {
-  const columns = getColumns(entity);
-  return handleColumns(columns, refine2 ?? {}, insertConditions);
-};
-
-// node_modules/@workspace/db/src/schema/reviews.ts
-var reviewsTable = pgTable("reviews", {
-  id: serial("id").primaryKey(),
-  discordUserId: text("discord_user_id"),
-  discordUsername: text("discord_username").notNull(),
-  discordDisplayName: text("discord_display_name").notNull(),
-  discordAvatarUrl: text("discord_avatar_url"),
-  content: text("content").notNull(),
-  product: text("product"),
-  support: text("support"),
-  rating: integer("rating").notNull().default(5),
-  imageUrl: text("image_url"),
-  approved: boolean("approved").notNull().default(true),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow()
-});
-var insertReviewSchema = createInsertSchema(reviewsTable).omit({
-  id: true,
-  createdAt: true
-});
-
-// node_modules/@workspace/db/src/index.ts
-var DATABASE_URL = process.env["DATABASE_URL"] ?? "";
-var db = drizzle(DATABASE_URL, { schema: schema_exports });
-
 // node_modules/zod/v4/classic/external.js
-var external_exports2 = {};
-__export(external_exports2, {
+var external_exports = {};
+__export(external_exports, {
   $brand: () => $brand,
   $input: () => $input,
   $output: () => $output,
-  NEVER: () => NEVER2,
+  NEVER: () => NEVER,
   TimePrecision: () => TimePrecision,
   ZodAny: () => ZodAny2,
   ZodArray: () => ZodArray2,
@@ -121050,7 +120625,7 @@ __export(external_exports2, {
   core: () => core_exports2,
   cuid: () => cuid3,
   cuid2: () => cuid22,
-  custom: () => custom2,
+  custom: () => custom,
   date: () => date4,
   discriminatedUnion: () => discriminatedUnion,
   e164: () => e1642,
@@ -121132,7 +120707,7 @@ __export(external_exports2, {
   safeParse: () => safeParse2,
   safeParseAsync: () => safeParseAsync2,
   set: () => set,
-  setErrorMap: () => setErrorMap2,
+  setErrorMap: () => setErrorMap,
   size: () => _size,
   startsWith: () => _startsWith,
   strictObject: () => strictObject,
@@ -121270,7 +120845,7 @@ __export(core_exports2, {
   Doc: () => Doc,
   JSONSchema: () => json_schema_exports,
   JSONSchemaGenerator: () => JSONSchemaGenerator,
-  NEVER: () => NEVER2,
+  NEVER: () => NEVER,
   TimePrecision: () => TimePrecision,
   _any: () => _any,
   _array: () => _array,
@@ -121411,7 +120986,7 @@ __export(core_exports2, {
 });
 
 // node_modules/zod/v4/core/core.js
-var NEVER2 = Object.freeze({
+var NEVER = Object.freeze({
   status: "aborted"
 });
 // @__NO_SIDE_EFFECTS__
@@ -131987,7 +131562,7 @@ function check(fn) {
   ch._zod.check = fn;
   return ch;
 }
-function custom2(fn, _params) {
+function custom(fn, _params) {
   return _custom(ZodCustom, fn ?? (() => true), _params);
 }
 function refine(fn, _params = {}) {
@@ -132056,7 +131631,7 @@ var ZodIssueCode2 = {
   invalid_value: "invalid_value",
   custom: "custom"
 };
-function setErrorMap2(map2) {
+function setErrorMap(map2) {
   config({
     customError: map2
   });
@@ -132093,16 +131668,287 @@ function date5(params) {
 // node_modules/zod/v4/classic/external.js
 config(en_default2());
 
+// node_modules/drizzle-zod/index.mjs
+var CONSTANTS = {
+  INT8_MIN: -128,
+  INT8_MAX: 127,
+  INT8_UNSIGNED_MAX: 255,
+  INT16_MIN: -32768,
+  INT16_MAX: 32767,
+  INT16_UNSIGNED_MAX: 65535,
+  INT24_MIN: -8388608,
+  INT24_MAX: 8388607,
+  INT24_UNSIGNED_MAX: 16777215,
+  INT32_MIN: -2147483648,
+  INT32_MAX: 2147483647,
+  INT32_UNSIGNED_MAX: 4294967295,
+  INT48_MIN: -140737488355328,
+  INT48_MAX: 140737488355327,
+  INT48_UNSIGNED_MAX: 281474976710655,
+  INT64_MIN: -9223372036854775808n,
+  INT64_MAX: 9223372036854775807n,
+  INT64_UNSIGNED_MAX: 18446744073709551615n
+};
+function isColumnType(column, columnTypes) {
+  return columnTypes.includes(column.columnType);
+}
+function isWithEnum(column) {
+  return "enumValues" in column && Array.isArray(column.enumValues) && column.enumValues.length > 0;
+}
+var literalSchema = external_exports.union([external_exports.string(), external_exports.number(), external_exports.boolean(), external_exports.null()]);
+var jsonSchema = external_exports.union([
+  literalSchema,
+  external_exports.record(external_exports.string(), external_exports.any()),
+  external_exports.array(external_exports.any())
+]);
+var bufferSchema = external_exports.custom((v) => v instanceof Buffer);
+function columnToSchema(column, factory) {
+  const z$1 = factory?.zodInstance ?? external_exports;
+  const coerce = factory?.coerce ?? {};
+  let schema;
+  if (isWithEnum(column)) {
+    schema = column.enumValues.length ? z$1.enum(column.enumValues) : z$1.string();
+  }
+  if (!schema) {
+    if (isColumnType(column, ["PgGeometry", "PgPointTuple"])) {
+      schema = z$1.tuple([z$1.number(), z$1.number()]);
+    } else if (isColumnType(column, ["PgGeometryObject", "PgPointObject"])) {
+      schema = z$1.object({ x: z$1.number(), y: z$1.number() });
+    } else if (isColumnType(column, ["PgHalfVector", "PgVector"])) {
+      schema = z$1.array(z$1.number());
+      schema = column.dimensions ? schema.length(column.dimensions) : schema;
+    } else if (isColumnType(column, ["PgLine"])) {
+      schema = z$1.tuple([z$1.number(), z$1.number(), z$1.number()]);
+    } else if (isColumnType(column, ["PgLineABC"])) {
+      schema = z$1.object({
+        a: z$1.number(),
+        b: z$1.number(),
+        c: z$1.number()
+      });
+    } else if (isColumnType(column, ["PgArray"])) {
+      schema = z$1.array(columnToSchema(column.baseColumn, factory));
+      schema = column.size ? schema.length(column.size) : schema;
+    } else if (column.dataType === "array") {
+      schema = z$1.array(z$1.any());
+    } else if (column.dataType === "number") {
+      schema = numberColumnToSchema(column, z$1, coerce);
+    } else if (column.dataType === "bigint") {
+      schema = bigintColumnToSchema(column, z$1, coerce);
+    } else if (column.dataType === "boolean") {
+      schema = coerce === true || coerce.boolean ? z$1.coerce.boolean() : z$1.boolean();
+    } else if (column.dataType === "date") {
+      schema = coerce === true || coerce.date ? z$1.coerce.date() : z$1.date();
+    } else if (column.dataType === "string") {
+      schema = stringColumnToSchema(column, z$1, coerce);
+    } else if (column.dataType === "json") {
+      schema = jsonSchema;
+    } else if (column.dataType === "custom") {
+      schema = z$1.any();
+    } else if (column.dataType === "buffer") {
+      schema = bufferSchema;
+    }
+  }
+  if (!schema) {
+    schema = z$1.any();
+  }
+  return schema;
+}
+function numberColumnToSchema(column, z, coerce) {
+  let unsigned = column.getSQLType().includes("unsigned");
+  let min;
+  let max;
+  let integer3 = false;
+  if (isColumnType(column, ["MySqlTinyInt", "SingleStoreTinyInt"])) {
+    min = unsigned ? 0 : CONSTANTS.INT8_MIN;
+    max = unsigned ? CONSTANTS.INT8_UNSIGNED_MAX : CONSTANTS.INT8_MAX;
+    integer3 = true;
+  } else if (isColumnType(column, [
+    "PgSmallInt",
+    "PgSmallSerial",
+    "MySqlSmallInt",
+    "SingleStoreSmallInt"
+  ])) {
+    min = unsigned ? 0 : CONSTANTS.INT16_MIN;
+    max = unsigned ? CONSTANTS.INT16_UNSIGNED_MAX : CONSTANTS.INT16_MAX;
+    integer3 = true;
+  } else if (isColumnType(column, [
+    "PgReal",
+    "MySqlFloat",
+    "MySqlMediumInt",
+    "SingleStoreMediumInt",
+    "SingleStoreFloat"
+  ])) {
+    min = unsigned ? 0 : CONSTANTS.INT24_MIN;
+    max = unsigned ? CONSTANTS.INT24_UNSIGNED_MAX : CONSTANTS.INT24_MAX;
+    integer3 = isColumnType(column, ["MySqlMediumInt", "SingleStoreMediumInt"]);
+  } else if (isColumnType(column, [
+    "PgInteger",
+    "PgSerial",
+    "MySqlInt",
+    "SingleStoreInt"
+  ])) {
+    min = unsigned ? 0 : CONSTANTS.INT32_MIN;
+    max = unsigned ? CONSTANTS.INT32_UNSIGNED_MAX : CONSTANTS.INT32_MAX;
+    integer3 = true;
+  } else if (isColumnType(column, [
+    "PgDoublePrecision",
+    "MySqlReal",
+    "MySqlDouble",
+    "SingleStoreReal",
+    "SingleStoreDouble",
+    "SQLiteReal"
+  ])) {
+    min = unsigned ? 0 : CONSTANTS.INT48_MIN;
+    max = unsigned ? CONSTANTS.INT48_UNSIGNED_MAX : CONSTANTS.INT48_MAX;
+  } else if (isColumnType(column, [
+    "PgBigInt53",
+    "PgBigSerial53",
+    "MySqlBigInt53",
+    "MySqlSerial",
+    "SingleStoreBigInt53",
+    "SingleStoreSerial",
+    "SQLiteInteger"
+  ])) {
+    unsigned = unsigned || isColumnType(column, ["MySqlSerial", "SingleStoreSerial"]);
+    min = unsigned ? 0 : Number.MIN_SAFE_INTEGER;
+    max = Number.MAX_SAFE_INTEGER;
+    integer3 = true;
+  } else if (isColumnType(column, ["MySqlYear", "SingleStoreYear"])) {
+    min = 1901;
+    max = 2155;
+    integer3 = true;
+  } else {
+    min = Number.MIN_SAFE_INTEGER;
+    max = Number.MAX_SAFE_INTEGER;
+  }
+  let schema = coerce === true || coerce?.number ? integer3 ? z.coerce.number() : z.coerce.number().int() : integer3 ? z.int() : z.number();
+  schema = schema.gte(min).lte(max);
+  return schema;
+}
+function bigintColumnToSchema(column, z, coerce) {
+  const unsigned = column.getSQLType().includes("unsigned");
+  const min = unsigned ? 0n : CONSTANTS.INT64_MIN;
+  const max = unsigned ? CONSTANTS.INT64_UNSIGNED_MAX : CONSTANTS.INT64_MAX;
+  const schema = coerce === true || coerce?.bigint ? z.coerce.bigint() : z.bigint();
+  return schema.gte(min).lte(max);
+}
+function stringColumnToSchema(column, z, coerce) {
+  if (isColumnType(column, ["PgUUID"])) {
+    return z.uuid();
+  }
+  let max;
+  let regex;
+  let fixed = false;
+  if (isColumnType(column, ["PgVarchar", "SQLiteText"])) {
+    max = column.length;
+  } else if (isColumnType(column, ["MySqlVarChar", "SingleStoreVarChar"])) {
+    max = column.length ?? CONSTANTS.INT16_UNSIGNED_MAX;
+  } else if (isColumnType(column, ["MySqlText", "SingleStoreText"])) {
+    if (column.textType === "longtext") {
+      max = CONSTANTS.INT32_UNSIGNED_MAX;
+    } else if (column.textType === "mediumtext") {
+      max = CONSTANTS.INT24_UNSIGNED_MAX;
+    } else if (column.textType === "text") {
+      max = CONSTANTS.INT16_UNSIGNED_MAX;
+    } else {
+      max = CONSTANTS.INT8_UNSIGNED_MAX;
+    }
+  }
+  if (isColumnType(column, [
+    "PgChar",
+    "MySqlChar",
+    "SingleStoreChar"
+  ])) {
+    max = column.length;
+    fixed = true;
+  }
+  if (isColumnType(column, ["PgBinaryVector"])) {
+    regex = /^[01]+$/;
+    max = column.dimensions;
+  }
+  let schema = coerce === true || coerce?.string ? z.coerce.string() : z.string();
+  schema = regex ? schema.regex(regex) : schema;
+  return max && fixed ? schema.length(max) : max ? schema.max(max) : schema;
+}
+function getColumns(tableLike) {
+  return isTable(tableLike) ? getTableColumns(tableLike) : getViewSelectedFields(tableLike);
+}
+function handleColumns(columns, refinements, conditions, factory) {
+  const columnSchemas = {};
+  for (const [key, selected] of Object.entries(columns)) {
+    if (!is(selected, Column) && !is(selected, SQL) && !is(selected, SQL.Aliased) && typeof selected === "object") {
+      const columns2 = isTable(selected) || isView(selected) ? getColumns(selected) : selected;
+      columnSchemas[key] = handleColumns(columns2, refinements[key] ?? {}, conditions, factory);
+      continue;
+    }
+    const refinement = refinements[key];
+    if (refinement !== void 0 && typeof refinement !== "function") {
+      columnSchemas[key] = refinement;
+      continue;
+    }
+    const column = is(selected, Column) ? selected : void 0;
+    const schema = column ? columnToSchema(column, factory) : external_exports.any();
+    const refined = typeof refinement === "function" ? refinement(schema) : schema;
+    if (conditions.never(column)) {
+      continue;
+    } else {
+      columnSchemas[key] = refined;
+    }
+    if (column) {
+      if (conditions.nullable(column)) {
+        columnSchemas[key] = columnSchemas[key].nullable();
+      }
+      if (conditions.optional(column)) {
+        columnSchemas[key] = columnSchemas[key].optional();
+      }
+    }
+  }
+  return external_exports.object(columnSchemas);
+}
+var insertConditions = {
+  never: (column) => column?.generated?.type === "always" || column?.generatedIdentity?.type === "always",
+  optional: (column) => !column.notNull || column.notNull && column.hasDefault,
+  nullable: (column) => !column.notNull
+};
+var createInsertSchema = (entity, refine2) => {
+  const columns = getColumns(entity);
+  return handleColumns(columns, refine2 ?? {}, insertConditions);
+};
+
+// node_modules/@workspace/db/src/schema/reviews.ts
+var reviewsTable = pgTable("reviews", {
+  id: serial("id").primaryKey(),
+  discordUserId: text("discord_user_id"),
+  discordUsername: text("discord_username").notNull(),
+  discordDisplayName: text("discord_display_name").notNull(),
+  discordAvatarUrl: text("discord_avatar_url"),
+  content: text("content").notNull(),
+  product: text("product"),
+  support: text("support"),
+  rating: integer("rating").notNull().default(5),
+  imageUrl: text("image_url"),
+  approved: boolean("approved").notNull().default(true),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow()
+});
+var insertReviewSchema = createInsertSchema(reviewsTable).omit({
+  id: true,
+  createdAt: true
+});
+
+// node_modules/@workspace/db/src/index.ts
+var DATABASE_URL = process.env["DATABASE_URL"] ?? "";
+var db = drizzle(DATABASE_URL, { schema: schema_exports });
+
 // src/routes/reviews.ts
 var router2 = (0, import_express2.Router)();
-var createReviewSchema = external_exports2.object({
-  discordUsername: external_exports2.string().min(1).max(64),
-  discordDisplayName: external_exports2.string().min(1).max(64),
-  discordAvatarUrl: external_exports2.string().url().optional().nullable(),
-  content: external_exports2.string().min(1).max(1e3),
-  product: external_exports2.string().max(128).optional().nullable(),
-  rating: external_exports2.number().int().min(1).max(5).default(5),
-  imageUrl: external_exports2.string().url().optional().nullable()
+var createReviewSchema = external_exports.object({
+  discordUsername: external_exports.string().min(1).max(64),
+  discordDisplayName: external_exports.string().min(1).max(64),
+  discordAvatarUrl: external_exports.string().url().optional().nullable(),
+  content: external_exports.string().min(1).max(1e3),
+  product: external_exports.string().max(128).optional().nullable(),
+  rating: external_exports.number().int().min(1).max(5).default(5),
+  imageUrl: external_exports.string().url().optional().nullable()
 });
 router2.get("/reviews", async (req, res) => {
   try {
@@ -132200,7 +132046,7 @@ var TEBEX_PACKAGES = {
   "Panel iOS \u2014 30 d\xEDas": 0,
   "Panel iOS \u2014 60 d\xEDas": 0,
   // ── Panel Undetected ──────────────────────────────────────────────────────
-  "Panel Undetected \u2014 7 d\xEDas": 0,
+  "Panel Undetected \u2014 7 d\xEDas": 7551015,
   "Panel Undetected \u2014 30 d\xEDas": 0,
   // ── Panel Blood Supreme ───────────────────────────────────────────────────
   "Panel Blood Supreme \u2014 7 d\xEDas": 0,
@@ -132217,15 +132063,15 @@ var router3 = (0, import_express3.Router)();
 var TEBEX_SECRET = process.env["TEBEX_SECRET_KEY"];
 var TEBEX_WEBSTORE_ID = process.env["TEBEX_WEBSTORE_ID"];
 var TEBEX_BASE = "https://headless.tebex.io/api";
-var checkoutSchema = external_exports2.object({
-  items: external_exports2.array(
-    external_exports2.object({
-      name: external_exports2.string(),
-      quantity: external_exports2.number().int().min(1).default(1)
+var checkoutSchema = external_exports.object({
+  items: external_exports.array(
+    external_exports.object({
+      name: external_exports.string(),
+      quantity: external_exports.number().int().min(1).default(1)
     })
   ).min(1),
-  completeUrl: external_exports2.string().url().optional(),
-  cancelUrl: external_exports2.string().url().optional()
+  completeUrl: external_exports.string().url().optional(),
+  cancelUrl: external_exports.string().url().optional()
 });
 router3.post("/checkout", async (req, res) => {
   if (!TEBEX_SECRET || !TEBEX_WEBSTORE_ID) {

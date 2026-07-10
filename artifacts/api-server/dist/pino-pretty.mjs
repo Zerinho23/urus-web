@@ -1,10 +1,11 @@
 import { createRequire as __bannerCrReq } from 'node:module';
 import __bannerPath from 'node:path';
 import __bannerUrl from 'node:url';
+
 globalThis.require = __bannerCrReq(import.meta.url);
 globalThis.__filename = __bannerUrl.fileURLToPath(import.meta.url);
 globalThis.__dirname = __bannerPath.dirname(globalThis.__filename);
-
+    
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x, {
   get: (a, b) => (typeof require !== "undefined" ? require : a)[b]
@@ -1719,7 +1720,7 @@ var require_cjs = __commonJS({
       const type = toStringObject.call(value);
       return type.substring(8, type.length - 1);
     }
-    var { hasOwnProperty, propertyIsEnumerable } = Object.prototype;
+    var { propertyIsEnumerable } = Object.prototype;
     function copyOwnDescriptor(original, clone, property, state) {
       const ownDescriptor = Object.getOwnPropertyDescriptor(original, property) || {
         configurable: true,
@@ -1740,13 +1741,11 @@ var require_cjs = __commonJS({
       }
     }
     function copyOwnPropertiesStrict(value, clone, state) {
-      const names = Object.getOwnPropertyNames(value);
-      for (let index = 0; index < names.length; ++index) {
-        copyOwnDescriptor(value, clone, names[index], state);
+      for (const name of Object.getOwnPropertyNames(value)) {
+        copyOwnDescriptor(value, clone, name, state);
       }
-      const symbols = Object.getOwnPropertySymbols(value);
-      for (let index = 0; index < symbols.length; ++index) {
-        copyOwnDescriptor(value, clone, symbols[index], state);
+      for (const symbol of Object.getOwnPropertySymbols(value)) {
+        copyOwnDescriptor(value, clone, symbol, state);
       }
       return clone;
     }
@@ -1778,9 +1777,9 @@ var require_cjs = __commonJS({
     function copyMapLoose(map, state) {
       const clone = new state.Constructor();
       state.cache.set(map, clone);
-      map.forEach((value, key) => {
+      for (const [key, value] of map) {
         clone.set(key, state.copier(value, state));
-      });
+      }
       return clone;
     }
     function copyMapStrict(map, state) {
@@ -1789,14 +1788,10 @@ var require_cjs = __commonJS({
     function copyObjectLoose(object, state) {
       const clone = getCleanClone(state.prototype);
       state.cache.set(object, clone);
-      for (const key in object) {
-        if (hasOwnProperty.call(object, key)) {
-          clone[key] = state.copier(object[key], state);
-        }
+      for (const key of Object.keys(object)) {
+        clone[key] = state.copier(object[key], state);
       }
-      const symbols = Object.getOwnPropertySymbols(object);
-      for (let index = 0; index < symbols.length; ++index) {
-        const symbol = symbols[index];
+      for (const symbol of Object.getOwnPropertySymbols(object)) {
         if (propertyIsEnumerable.call(object, symbol)) {
           clone[symbol] = state.copier(object[symbol], state);
         }
@@ -1822,9 +1817,9 @@ var require_cjs = __commonJS({
     function copySetLoose(set, state) {
       const clone = new state.Constructor();
       state.cache.set(set, clone);
-      set.forEach((value) => {
+      for (const value of set) {
         clone.add(state.copier(value, state));
-      });
+      }
       return clone;
     }
     function copySetStrict(set, state) {
