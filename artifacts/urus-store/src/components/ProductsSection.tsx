@@ -4,6 +4,8 @@ import {
   Smartphone, Monitor, Wifi, Eye, Lock, Star, Flame, Crown, Swords, ChevronDown
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import { Reveal, StaggerGroup, StaggerItem } from "@/components/Reveal";
+import { motion, AnimatePresence } from "framer-motion";
 
 type Category = "all" | "freefire" | "bloodstrike";
 interface Plan { duration: string; price: number; }
@@ -154,7 +156,7 @@ export default function ProductsSection() {
 
   return (
     <section id="products" className="py-16 px-4 md:px-[6%]">
-      <div className="text-center mb-8">
+      <Reveal className="text-center mb-8">
         <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-widest mb-3"
           style={{ background: "rgba(6,182,212,0.08)", border: "1px solid rgba(6,182,212,0.2)", color: "#22d3ee" }}>
           <Zap className="h-3 w-3" />Nuestros Productos
@@ -163,12 +165,12 @@ export default function ProductsSection() {
           Elige tu{" "}<span style={{ color: "#06b6d4", textShadow: "0 0 30px rgba(6,182,212,0.5)" }}>herramienta</span>
         </h2>
         <p className="text-white/35 text-sm mt-2 max-w-sm mx-auto">Entrega inmediata · Anti-ban garantizado · Actualizaciones constantes</p>
-      </div>
-      <div className="flex justify-center gap-2 mb-8 flex-wrap">
+      </Reveal>
+      <Reveal delay={0.1} className="flex justify-center gap-2 mb-8 flex-wrap">
         {CATEGORIES.map(({ key, label, count }) => {
           const active = activeTab === key;
           return (
-            <button key={key} onClick={() => setActiveTab(key)} className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200"
+            <button key={key} onClick={() => setActiveTab(key)} className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 hover:scale-[1.03] active:scale-95"
               style={{ background: active ? "rgba(6,182,212,0.12)" : "rgba(255,255,255,0.04)", border: active ? "1px solid rgba(6,182,212,0.4)" : "1px solid rgba(255,255,255,0.08)", color: active ? "#22d3ee" : "rgba(255,255,255,0.45)", boxShadow: active ? "0 0 16px rgba(6,182,212,0.2)" : "none" }}>
               {label}
               <span className="inline-flex items-center justify-center text-[10px] rounded-full px-1.5 py-0.5 font-black"
@@ -178,17 +180,29 @@ export default function ProductsSection() {
             </button>
           );
         })}
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {filtered.map((p) => <ProductCard key={p.id} product={p} />)}
-      </div>
-      <div className="mt-8 flex justify-center">
+      </Reveal>
+      <AnimatePresence mode="wait">
+        <StaggerGroup key={activeTab} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {filtered.map((p) => (
+            <StaggerItem key={p.id}>
+              <ProductCard product={p} />
+            </StaggerItem>
+          ))}
+        </StaggerGroup>
+      </AnimatePresence>
+      <motion.div
+        className="mt-8 flex justify-center"
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-40px" }}
+        transition={{ duration: 0.5 }}
+      >
         <button onClick={() => document.getElementById("free-products")?.scrollIntoView({ behavior: "smooth" })}
           className="inline-flex items-center gap-2.5 px-6 py-3 rounded-full text-sm font-bold transition-all duration-200 hover:scale-105"
           style={{ background: "rgba(251,191,36,0.06)", border: "1.5px dashed rgba(251,191,36,0.3)", color: "#fbbf24" }}>
           <Gift className="h-4 w-4" />¿Sin presupuesto? Ver productos gratis →
         </button>
-      </div>
+      </motion.div>
     </section>
   );
 }

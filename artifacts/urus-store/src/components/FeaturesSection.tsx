@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Shield, Zap, HeadphonesIcon, RefreshCw, CreditCard, Lock, CheckCircle2 } from "lucide-react";
+import { Reveal, StaggerGroup, StaggerItem } from "@/components/Reveal";
 
 const features = [
   { icon: <Shield className="h-7 w-7" />, title: "100% Indetectable", description: "Tecnología avanzada que garantiza invisibilidad total frente a todos los sistemas anti-cheat actuales.", color: "#22c55e", glow: "rgba(34,197,94,0.3)", bg: "rgba(34,197,94,0.08)", border: "rgba(34,197,94,0.25)", stat: "0 bans", statLabel: "reportados" },
@@ -57,7 +58,7 @@ function FeatureCard({ f, index }: { f: typeof features[0]; index: number }) {
 export default function FeaturesSection() {
   return (
     <section id="features" className="py-20 px-4 md:px-[6%]">
-      <div className="text-center mb-14">
+      <Reveal className="text-center mb-14">
         <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-4"
           style={{ background: "rgba(6,182,212,0.08)", border: "1px solid rgba(6,182,212,0.2)", color: "#22d3ee" }}>
           <CheckCircle2 className="h-3.5 w-3.5" />
@@ -70,12 +71,19 @@ export default function FeaturesSection() {
         <p className="text-white/35 text-sm mt-3 max-w-lg mx-auto leading-relaxed">
           Urus Store combina tecnología de punta con soporte dedicado para ofrecerte la mejor experiencia del mercado.
         </p>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {features.map((f, i) => <FeatureCard key={i} f={f} index={i} />)}
-      </div>
-      <div className="mt-10 rounded-2xl px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4"
-        style={{ background: "linear-gradient(135deg, rgba(6,182,212,0.07) 0%, rgba(168,85,247,0.07) 100%)", border: "1px solid rgba(6,182,212,0.15)" }}>
+      </Reveal>
+      <StaggerGroup className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {features.map((f, i) => (
+          <StaggerItem key={i}>
+            <FeatureCard f={f} index={i} />
+          </StaggerItem>
+        ))}
+      </StaggerGroup>
+      <Reveal
+        delay={0.15}
+        className="mt-10 rounded-2xl px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4"
+        style={{ background: "linear-gradient(135deg, rgba(6,182,212,0.07) 0%, rgba(168,85,247,0.07) 100%)", border: "1px solid rgba(6,182,212,0.15)" }}
+      >
         <div>
           <p className="text-white font-extrabold text-lg">¿Listo para dominar?</p>
           <p className="text-white/40 text-sm mt-0.5">Únete a miles de jugadores que ya confían en Urus Store.</p>
@@ -87,7 +95,7 @@ export default function FeaturesSection() {
         >
           Ver productos →
         </button>
-      </div>
+      </Reveal>
     </section>
   );
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Clock, Gift, RotateCcw, ShieldCheck } from "lucide-react";
+import { Reveal, StaggerGroup, StaggerItem } from "@/components/Reveal";
 
 function getNextReset(): Date {
   const now = new Date();
@@ -118,7 +119,7 @@ export default function FreeProductsSection() {
 
   return (
     <section id="free-products" className="py-16 px-4 md:px-[10%]">
-      <div className="flex flex-col items-center text-center gap-4 mb-10">
+      <Reveal className="flex flex-col items-center text-center gap-4 mb-10">
         <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest"
           style={{ background: "rgba(251,191,36,0.1)", border: "1px solid rgba(251,191,36,0.3)", color: "#fbbf24" }}>
           <Gift className="h-3.5 w-3.5" />Productos Gratuitos
@@ -127,8 +128,8 @@ export default function FreeProductsSection() {
           Prueba{" "}<span style={{ color: "#fbbf24", textShadow: "0 0 24px rgba(251,191,36,0.4)" }}>Gratis</span>
         </h2>
         <p className="text-white/50 text-sm max-w-md">Empieza sin pagar nada — 3 días de prueba completamente gratis.</p>
-      </div>
-      <div className="max-w-xl mx-auto mb-10">
+      </Reveal>
+      <Reveal delay={0.1} className="max-w-xl mx-auto mb-10">
         <div className="rounded-2xl px-6 py-7 flex flex-col items-center gap-5"
           style={{ background: "linear-gradient(135deg, rgba(251,191,36,0.07), rgba(251,191,36,0.02))", border: "1px solid rgba(251,191,36,0.2)", boxShadow: "0 0 40px rgba(251,191,36,0.05)" }}>
           <div className="flex items-center gap-2 text-yellow-400 text-xs font-bold uppercase tracking-widest">
@@ -149,16 +150,20 @@ export default function FreeProductsSection() {
             <span>Disponible gratuitamente · Se renueva cada semana</span>
           </div>
         </div>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-2xl mx-auto">
-        {freeProducts.map((p) => <FreeCard key={p.id} product={p} />)}
-      </div>
-      <div className="flex justify-center mt-10">
+      </Reveal>
+      <StaggerGroup className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-2xl mx-auto">
+        {freeProducts.map((p) => (
+          <StaggerItem key={p.id}>
+            <FreeCard product={p} />
+          </StaggerItem>
+        ))}
+      </StaggerGroup>
+      <Reveal delay={0.1} className="flex justify-center mt-10">
         <button className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold transition-all duration-200 hover:scale-105 active:scale-95"
           style={{ background: "rgba(251,191,36,0.06)", border: "1px solid rgba(251,191,36,0.25)", color: "#fbbf24" }}>
           <Gift className="h-4 w-4" />Ver todos los productos gratis
         </button>
-      </div>
+      </Reveal>
     </section>
   );
 }

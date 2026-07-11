@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { getApiBase } from "@/lib/api";
 import { MessageSquare, Star, ThumbsUp, Shield, Users } from "lucide-react";
+import { Reveal } from "@/components/Reveal";
 
 interface Review {
   id: number;
@@ -158,7 +159,7 @@ export default function ReviewsSection() {
 
   return (
     <section id="reviews" className="py-20 overflow-hidden">
-      <div className="flex flex-col items-center text-center gap-4 mb-10 px-4">
+      <Reveal className="flex flex-col items-center text-center gap-4 mb-10 px-4">
         <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest"
           style={{ background: "rgba(88,101,242,0.12)", border: "1px solid rgba(88,101,242,0.3)", color: "#7289da" }}>
           <MessageSquare className="h-3.5 w-3.5" />
@@ -187,7 +188,7 @@ export default function ReviewsSection() {
             <span>Compras verificadas</span>
           </div>
         </div>
-      </div>
+      </Reveal>
       <div className="relative">
         <div ref={scrollRef} className="flex gap-4 overflow-x-auto pb-2"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none", paddingLeft: "max(1.5rem, calc((100vw - 1200px) / 2))", paddingRight: "max(1.5rem, calc((100vw - 1200px) / 2))" }}>

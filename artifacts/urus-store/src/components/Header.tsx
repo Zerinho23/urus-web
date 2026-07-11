@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { ShoppingCart } from "lucide-react";
+import { motion } from "framer-motion";
 import { useCart } from "@/context/CartContext";
 
 const YTIcon = () => (
@@ -30,21 +31,43 @@ function scrollTo(id: string) {
 }
 
 const NAV_ITEMS = [
-  { label: "Inicio", action: () => window.scrollTo({ top: 0, behavior: "smooth" }) },
-  { label: "Productos", action: () => scrollTo("products") },
-  { label: "Reseñas", action: () => scrollTo("reviews") },
-  { label: "Características", action: () => scrollTo("features") },
+  { id: "top", label: "Inicio", action: () => window.scrollTo({ top: 0, behavior: "smooth" }) },
+  { id: "products", label: "Productos", action: () => scrollTo("products") },
+  { id: "reviews", label: "Reseñas", action: () => scrollTo("reviews") },
+  { id: "features", label: "Características", action: () => scrollTo("features") },
 ];
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("top");
   const { count, setOpen: openCart } = useCart();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const sectionIds = ["products", "reviews", "features"];
+    const sections = sectionIds
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setActiveSection(entry.target.id);
+        }
+      },
+      { rootMargin: "-40% 0px -50% 0px", threshold: 0 },
+    );
+    sections.forEach((el) => observer.observe(el));
+
+    const handleTop = () => { if (window.scrollY < 200) setActiveSection("top"); };
+    window.addEventListener("scroll", handleTop);
+    return () => { observer.disconnect(); window.removeEventListener("scroll", handleTop); };
   }, []);
 
   return (
@@ -69,15 +92,27 @@ export default function Header() {
         </button>
 
         <nav className="hidden md:flex items-center gap-1 text-sm font-medium text-white/80">
-          {NAV_ITEMS.map(({ label, action }) => (
-            <button
-              key={label}
-              onClick={action}
-              className="px-3 py-1.5 rounded-md hover:bg-white/10 hover:text-white transition-all duration-200"
-            >
-              {label}
-            </button>
-          ))}
+          {NAV_ITEMS.map(({ id, label, action }) => {
+            const active = activeSection === id;
+            return (
+              <button
+                key={label}
+                onClick={action}
+                className="relative px-3 py-1.5 rounded-md transition-all duration-200"
+                style={{ color: active ? "#22d3ee" : undefined }}
+              >
+                <span className="hover:text-white transition-colors">{label}</span>
+                {active && (
+                  <motion.span
+                    layoutId="nav-active-indicator"
+                    className="absolute left-3 right-3 -bottom-1 h-[2px] rounded-full"
+                    style={{ background: "#22d3ee", boxShadow: "0 0 8px #22d3ee" }}
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
+              </button>
+            );
+          })}
         </nav>
 
         <div className="flex items-center gap-2">

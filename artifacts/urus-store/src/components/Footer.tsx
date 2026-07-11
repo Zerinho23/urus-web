@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import { Reveal } from "@/components/Reveal";
 
 const YTIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
@@ -32,7 +33,7 @@ export default function Footer() {
       className="border-t px-4 md:px-[10%] py-12"
       style={{ borderColor: "rgba(255,255,255,0.06)", background: "rgba(5,6,8,0.9)" }}
     >
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
+      <Reveal className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
         <div className="col-span-1 md:col-span-2">
           <div className="flex items-center gap-2 mb-4">
             <img src="/urc-logo.png" alt="Urus Cheats" className="h-12 w-12 rounded-xl object-cover" />
@@ -71,7 +72,7 @@ export default function Footer() {
             <li><a href="https://discord.gg/panelurus" target="_blank" rel="noopener noreferrer" className="text-white/40 text-sm hover:text-white transition-colors">Contacto</a></li>
           </ul>
         </div>
-      </div>
+      </Reveal>
 
       <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
         <p className="text-white/30 text-xs">© {year} Urus Store. Todos los derechos reservados.</p>
