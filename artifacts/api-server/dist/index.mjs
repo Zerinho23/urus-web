@@ -132824,7 +132824,8 @@ var TEBEX_PACKAGES = {
   "Panel iOS \u2014 60 d\xEDas": 0,
   // ── Panel Undetected ──────────────────────────────────────────────────────
   "Panel Undetected \u2014 7 d\xEDas": 7551015,
-  "Panel Undetected \u2014 30 d\xEDas": 0,
+  "Panel Undetected \u2014 15 d\xEDas": 7552434,
+  "Panel Undetected \u2014 30 d\xEDas": 7552437,
   // ── Panel Blood Supreme ───────────────────────────────────────────────────
   "Panel Blood Supreme \u2014 7 d\xEDas": 0,
   "Panel Blood Supreme \u2014 15 d\xEDas": 0,
