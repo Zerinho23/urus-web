@@ -86,11 +86,20 @@ export default function HeroSection() {
       <div className="absolute inset-x-0 bottom-0 h-40 pointer-events-none" style={{ background: "linear-gradient(to top, #050608, transparent)", zIndex: 4 }} />
 
       <div className="relative flex flex-col justify-center items-center text-center px-5 md:px-16" style={{ zIndex: 5, minHeight: "100svh", paddingTop: 120, paddingBottom: 60 }}>
-        <div style={fadeUp(0)}>
-          <span className="inline-flex items-center gap-2 text-[11px] font-bold tracking-widest uppercase px-4 py-1.5 rounded-full mb-6"
-            style={{ background: "rgba(6,182,212,0.08)", border: "1px solid rgba(6,182,212,0.25)", color: "#22d3ee" }}>
+        {/* HUD frame corners */}
+        <span className="hidden md:block absolute pointer-events-none" style={{ top: 40, left: 24, width: 28, height: 28, borderTop: "2px solid rgba(34,211,238,0.5)", borderLeft: "2px solid rgba(34,211,238,0.5)" }} />
+        <span className="hidden md:block absolute pointer-events-none" style={{ top: 40, right: 24, width: 28, height: 28, borderTop: "2px solid rgba(34,211,238,0.5)", borderRight: "2px solid rgba(34,211,238,0.5)" }} />
+        <span className="hidden md:block absolute pointer-events-none" style={{ bottom: 40, left: 24, width: 28, height: 28, borderBottom: "2px solid rgba(139,92,246,0.4)", borderLeft: "2px solid rgba(139,92,246,0.4)" }} />
+        <span className="hidden md:block absolute pointer-events-none" style={{ bottom: 40, right: 24, width: 28, height: 28, borderBottom: "2px solid rgba(139,92,246,0.4)", borderRight: "2px solid rgba(139,92,246,0.4)" }} />
+
+        <div style={fadeUp(0)} className="flex flex-col items-center gap-3">
+          <span className="inline-flex items-center gap-2 text-[11px] font-bold tracking-widest uppercase px-4 py-1.5 font-mono"
+            style={{ background: "rgba(6,182,212,0.08)", border: "1px solid rgba(6,182,212,0.25)", color: "#22d3ee", clipPath: "polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)" }}>
             <span className="w-2 h-2 rounded-full" style={{ background: "#22d3ee", boxShadow: "0 0 6px #22d3ee", animation: "pulse-dot 2s ease-in-out infinite" }} />
-            Status: Indetectable
+            [ STATUS: INDETECTABLE ]
+          </span>
+          <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-white/35 uppercase tracking-wider">
+            <DiscordIcon /> +8,000 miembros activos en Discord
           </span>
         </div>
 
@@ -119,8 +128,8 @@ export default function HeroSection() {
         <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-12 w-full" style={{ maxWidth: 420, ...fadeUp(420) }}>
           <button
             onClick={() => document.getElementById("products")?.scrollIntoView({ behavior: "smooth" })}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-white transition-all duration-200 hover:scale-105 active:scale-95"
-            style={{ background: "linear-gradient(135deg, #06b6d4, #0891b2)", boxShadow: "0 0 30px rgba(6,182,212,0.45), 0 4px 20px rgba(0,0,0,0.4)", fontSize: "1rem" }}
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 font-bold text-white uppercase tracking-wide transition-all duration-200 hover:scale-105 active:scale-95"
+            style={{ background: "linear-gradient(135deg, #06b6d4, #0891b2)", boxShadow: "0 0 30px rgba(6,182,212,0.45), 0 4px 20px rgba(0,0,0,0.4)", fontSize: "1rem", clipPath: "polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)" }}
           >
             Compra Ahora <ArrowRight className="h-4 w-4" />
           </button>
@@ -128,8 +137,8 @@ export default function HeroSection() {
             href="https://discord.gg/panelurus"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-semibold text-white/80 border border-white/15 bg-white/5 hover:border-white/30 hover:text-white transition-all duration-200"
-            style={{ fontSize: "0.9rem", backdropFilter: "blur(8px)" }}
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 font-semibold text-white/80 border border-white/15 bg-white/5 hover:border-white/30 hover:text-white transition-all duration-200"
+            style={{ fontSize: "0.9rem", backdropFilter: "blur(8px)", clipPath: "polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)" }}
           >
             <DiscordIcon /> Únete en Discord
           </a>

@@ -9,7 +9,7 @@ function hexToRgba(hex: string, alpha: number) {
 }
 
 const stats = [
-  { icon: <Users className="h-6 w-6" />, value: 50000, suffix: "+", label: "Clientes satisfechos", color: "#06b6d4" },
+  { icon: <Users className="h-6 w-6" />, value: 8000, suffix: "+", label: "Miembros en Discord", color: "#06b6d4" },
   { icon: <Package className="h-6 w-6" />, value: 7, suffix: "", label: "Productos disponibles", color: "#a855f7" },
   { icon: <Star className="h-6 w-6" />, value: 99, suffix: "%", label: "Tasa de satisfacción", color: "#fbbf24" },
   { icon: <Clock className="h-6 w-6" />, value: 24, suffix: "/7", label: "Soporte disponible", color: "#22c55e" },

@@ -69,11 +69,27 @@ function ProductCard({ product }: { product: typeof products[0] }) {
     setTimeout(() => setAdded(false), 1500);
   };
 
+  const corner = (pos: string) => (
+    <span className="absolute w-3.5 h-3.5 pointer-events-none z-20 transition-opacity duration-300"
+      style={{
+        opacity: hovered ? 1 : 0,
+        borderColor: c,
+        ...(pos === "tl" ? { top: 6, left: 6, borderTop: "2px solid", borderLeft: "2px solid" } : {}),
+        ...(pos === "tr" ? { top: 6, right: 6, borderTop: "2px solid", borderRight: "2px solid" } : {}),
+        ...(pos === "bl" ? { bottom: 6, left: 6, borderBottom: "2px solid", borderLeft: "2px solid" } : {}),
+        ...(pos === "br" ? { bottom: 6, right: 6, borderBottom: "2px solid", borderRight: "2px solid" } : {}),
+      }} />
+  );
+
   return (
-    <div className="relative flex flex-col rounded-2xl overflow-hidden"
-      style={{ background: "#0a0b0f", border: `1px solid ${hovered ? hexToRgba(c, 0.55) : hexToRgba(c, 0.18)}`, boxShadow: hovered ? `0 0 0 1px ${hexToRgba(c, 0.12)}, 0 20px 60px rgba(0,0,0,0.7), 0 0 40px ${glow}` : "0 4px 24px rgba(0,0,0,0.5)", transform: hovered ? "translateY(-6px)" : "translateY(0)", transition: "all 0.28s cubic-bezier(0.4,0,0.2,1)" }}
+    <div className="relative flex flex-col overflow-hidden font-mono"
+      style={{ background: "#0a0b0f", clipPath: "polygon(0 12px, 12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%)", border: `1px solid ${hovered ? hexToRgba(c, 0.55) : hexToRgba(c, 0.18)}`, boxShadow: hovered ? `0 0 0 1px ${hexToRgba(c, 0.12)}, 0 20px 60px rgba(0,0,0,0.7), 0 0 40px ${glow}` : "0 4px 24px rgba(0,0,0,0.5)", transform: hovered ? "translateY(-6px)" : "translateY(0)", transition: "all 0.28s cubic-bezier(0.4,0,0.2,1)" }}
       onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
+      {corner("tl")}{corner("tr")}{corner("bl")}{corner("br")}
       <div className="absolute top-0 left-0 right-0 h-[3px] z-10" style={{ background: c, boxShadow: `0 0 10px ${hexToRgba(c, 0.7)}` }} />
+      {hovered && (
+        <div className="absolute left-0 right-0 h-10 pointer-events-none z-20" style={{ background: `linear-gradient(to bottom, transparent, ${hexToRgba(c, 0.12)}, transparent)`, animation: "scan-sweep 1.4s ease-in-out infinite" }} />
+      )}
       <div className="relative overflow-hidden" style={{ height: 160, background: `linear-gradient(160deg, ${product.gradientFrom} 0%, ${product.gradientTo} 100%)` }}>
         {hasImage ? (
           <>
@@ -93,10 +109,10 @@ function ProductCard({ product }: { product: typeof products[0] }) {
           </>
         )}
         <div className="absolute top-3 left-3 z-10">
-          <span className="text-[9px] font-extrabold uppercase tracking-[0.18em] px-2 py-1 rounded-md" style={{ background: "rgba(0,0,0,0.6)", border: `1px solid ${hexToRgba(c, 0.4)}`, color: c, backdropFilter: "blur(4px)" }}>{product.game}</span>
+          <span className="text-[9px] font-extrabold uppercase tracking-[0.18em] px-2 py-1" style={{ background: "rgba(0,0,0,0.6)", border: `1px solid ${hexToRgba(c, 0.4)}`, color: c, backdropFilter: "blur(4px)", clipPath: "polygon(0 0, 100% 0, 100% 70%, 90% 100%, 0 100%)" }}>{product.game}</span>
         </div>
         <div className="absolute top-3 right-3 z-10">
-          <span className="text-[9px] font-extrabold tracking-widest px-2.5 py-1 rounded-md text-white" style={{ background: product.badgeBg, textShadow: "0 1px 3px rgba(0,0,0,0.5)" }}>{product.badge}</span>
+          <span className="text-[9px] font-extrabold tracking-widest px-2.5 py-1 text-white" style={{ background: product.badgeBg, textShadow: "0 1px 3px rgba(0,0,0,0.5)", clipPath: "polygon(10% 0, 100% 0, 100% 100%, 0 100%, 0 30%)" }}>{product.badge}</span>
         </div>
         <div className="absolute bottom-3 left-3 z-10">
           <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold" style={{ background: "rgba(34,197,94,0.15)", border: "1px solid rgba(34,197,94,0.35)", color: "#4ade80", backdropFilter: "blur(4px)" }}>
@@ -127,15 +143,15 @@ function ProductCard({ product }: { product: typeof products[0] }) {
             <div>
               <p className="text-white/25 text-[9px] uppercase tracking-widest">Desde</p>
               <div className="flex items-baseline gap-1">
-                <p className="font-extrabold text-xl leading-none mt-0.5" style={{ color: hovered ? c : "white", transition: "color 0.2s" }}>${plan.price}</p>
+                <p className="font-extrabold text-xl leading-none mt-0.5" style={{ color: hovered ? c : "white", transition: "color 0.2s" }}>[ ${plan.price} ]</p>
                 <span className="text-white/30 text-[10px]">USD</span>
               </div>
             </div>
-            <div className="flex items-center gap-1 text-white/22 text-[10px]">
+            <div className="flex items-center gap-1 text-white/22 text-[10px] uppercase tracking-wider">
               <Zap className="h-3 w-3" />Inmediato
             </div>
           </div>
-          <button onClick={() => setShowPlans(!showPlans)} className="w-full flex items-center justify-between px-3 py-1.5 rounded-lg mb-2 text-[11px] font-semibold transition-all"
+          <button onClick={() => setShowPlans(!showPlans)} className="w-full flex items-center justify-between px-3 py-1.5 mb-2 text-[11px] font-semibold transition-all"
             style={{ background: hexToRgba(c, 0.08), border: `1px solid ${hexToRgba(c, 0.2)}`, color: c }}>
             <span className="flex items-center gap-1.5">
               {plan.duration} — ${plan.price} USD
@@ -157,8 +173,8 @@ function ProductCard({ product }: { product: typeof products[0] }) {
               ))}
             </div>
           )}
-          <button onClick={handleAdd} className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-xs text-black transition-all duration-200 hover:scale-[1.02] active:scale-95"
-            style={{ background: added ? "linear-gradient(135deg,#22c55e,#16a34a)" : c.startsWith("linear") ? c : `linear-gradient(135deg, ${c}, ${c}cc)`, boxShadow: added ? "0 0 14px rgba(34,197,94,0.4)" : `0 0 14px ${hexToRgba(c, 0.35)}`, color: "#000" }}>
+          <button onClick={handleAdd} className="w-full flex items-center justify-center gap-2 py-2.5 font-bold text-xs text-black uppercase tracking-widest transition-all duration-200 hover:scale-[1.02] active:scale-95"
+            style={{ clipPath: "polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)", background: added ? "linear-gradient(135deg,#22c55e,#16a34a)" : c.startsWith("linear") ? c : `linear-gradient(135deg, ${c}, ${c}cc)`, boxShadow: added ? "0 0 14px rgba(34,197,94,0.4)" : `0 0 14px ${hexToRgba(c, 0.35)}`, color: "#000" }}>
             <ShoppingCart className="h-3.5 w-3.5" />
             {added ? "✓ Agregado" : "Agregar al carrito"}
           </button>
@@ -194,8 +210,8 @@ export default function ProductsSection() {
         {CATEGORIES.map(({ key, label, count }) => {
           const active = activeTab === key;
           return (
-            <button key={key} onClick={() => setActiveTab(key)} className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 hover:scale-[1.03] active:scale-95"
-              style={{ background: active ? "rgba(6,182,212,0.12)" : "rgba(255,255,255,0.04)", border: active ? "1px solid rgba(6,182,212,0.4)" : "1px solid rgba(255,255,255,0.08)", color: active ? "#22d3ee" : "rgba(255,255,255,0.45)", boxShadow: active ? "0 0 16px rgba(6,182,212,0.2)" : "none" }}>
+            <button key={key} onClick={() => setActiveTab(key)} className="flex items-center gap-2 px-5 py-2.5 text-sm font-bold uppercase tracking-wide font-mono transition-all duration-200 hover:scale-[1.03] active:scale-95"
+              style={{ background: active ? "rgba(6,182,212,0.12)" : "rgba(255,255,255,0.04)", border: active ? "1px solid rgba(6,182,212,0.4)" : "1px solid rgba(255,255,255,0.08)", color: active ? "#22d3ee" : "rgba(255,255,255,0.45)", boxShadow: active ? "0 0 16px rgba(6,182,212,0.2)" : "none", clipPath: "polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)" }}>
               {label}
               <span className="inline-flex items-center justify-center text-[10px] rounded-full px-1.5 py-0.5 font-black"
                 style={{ background: active ? "rgba(6,182,212,0.2)" : "rgba(255,255,255,0.07)", color: active ? "#22d3ee" : "rgba(255,255,255,0.35)", minWidth: 20 }}>
