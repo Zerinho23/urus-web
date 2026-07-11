@@ -113,12 +113,12 @@ export default function CartDrawer() {
         style={{ width: "min(440px, 100vw)", background: "linear-gradient(180deg, #0a0c12 0%, #07080b 100%)", borderLeft: "1px solid rgba(255,255,255,0.07)", boxShadow: "-20px 0 80px rgba(0,0,0,0.9)", animation: "slideInRight 0.28s cubic-bezier(0.4,0,0.2,1)" }}>
         <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "rgba(255,255,255,0.07)" }}>
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "rgba(251,191,36,0.12)", border: "1px solid rgba(251,191,36,0.25)" }}>
+            <div className="w-8 h-8 flex items-center justify-center" style={{ background: "rgba(251,191,36,0.12)", border: "1px solid rgba(251,191,36,0.25)", clipPath: "polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)" }}>
               <ShoppingCart className="h-4 w-4 text-yellow-400" />
             </div>
             <div>
-              <span className="text-white font-extrabold text-base">Mi Carrito</span>
-              {count > 0 && <span className="text-white/40 text-xs ml-2">{count} {count === 1 ? "ítem" : "ítems"}</span>}
+              <span className="text-white font-extrabold text-base uppercase tracking-wide font-mono">[ Mi Carrito ]</span>
+              {count > 0 && <span className="text-white/40 text-xs ml-2 font-mono">{count} {count === 1 ? "ítem" : "ítems"}</span>}
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -210,8 +210,8 @@ export default function CartDrawer() {
                     <input type="text" value={couponInput} onChange={(e) => setCouponInput(e.target.value.toUpperCase())} onKeyDown={(e) => e.key === "Enter" && applyCoupon()}
                       placeholder="Ej: URUS10" className="flex-1 px-3 py-2 rounded-xl text-xs font-bold text-white placeholder:text-white/20 outline-none transition-all"
                       style={{ background: "rgba(255,255,255,0.06)", border: couponError ? "1px solid rgba(239,68,68,0.5)" : "1px solid rgba(255,255,255,0.1)" }} />
-                    <button onClick={applyCoupon} className="px-4 py-2 rounded-xl text-xs font-bold text-black transition-all hover:scale-105 active:scale-95"
-                      style={{ background: "linear-gradient(135deg, #fbbf24, #f59e0b)" }}>Aplicar</button>
+                    <button onClick={applyCoupon} className="px-4 py-2 text-xs font-bold text-black uppercase tracking-wide transition-all hover:scale-105 active:scale-95"
+                      style={{ background: "linear-gradient(135deg, #fbbf24, #f59e0b)", clipPath: "polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)" }}>Aplicar</button>
                   </div>
                 )}
                 {couponError && <p className="text-red-400 text-[10px] mt-1.5">{couponError}</p>}
@@ -234,24 +234,24 @@ export default function CartDrawer() {
                 </div>
               )}
               <div className="flex justify-between items-center pt-2 border-t" style={{ borderColor: "rgba(255,255,255,0.07)" }}>
-                <span className="text-white font-bold text-base">Total</span>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-white font-extrabold text-2xl">${finalTotal.toFixed(2)}</span>
+                <span className="text-white font-bold text-base uppercase tracking-wide">Total</span>
+                <div className="flex items-baseline gap-1 font-mono">
+                  <span className="text-white font-extrabold text-2xl">[ ${finalTotal.toFixed(2)} ]</span>
                   <span className="text-white/30 text-xs">USD</span>
                 </div>
               </div>
             </div>
             {checkoutError && (
-              <div className="px-4 py-3 rounded-xl text-xs text-red-300 font-medium" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.25)" }}>{checkoutError}</div>
+              <div className="px-4 py-3 text-xs text-red-300 font-medium" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.25)", clipPath: "polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)" }}>{checkoutError}</div>
             )}
             <button onClick={handleTebexCheckout} disabled={checkoutLoading}
-              className="w-full flex items-center justify-center gap-2.5 py-4 rounded-2xl font-extrabold text-white transition-all text-sm disabled:opacity-70 disabled:cursor-not-allowed"
-              style={{ background: checkoutLoading ? "rgba(6,182,212,0.3)" : "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)", boxShadow: checkoutLoading ? "none" : "0 0 30px rgba(6,182,212,0.4), 0 4px 20px rgba(0,0,0,0.4)" }}>
+              className="w-full flex items-center justify-center gap-2.5 py-4 font-extrabold text-white uppercase tracking-wide transition-all text-sm disabled:opacity-70 disabled:cursor-not-allowed"
+              style={{ background: checkoutLoading ? "rgba(6,182,212,0.3)" : "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)", boxShadow: checkoutLoading ? "none" : "0 0 30px rgba(6,182,212,0.4), 0 4px 20px rgba(0,0,0,0.4)", clipPath: "polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)" }}>
               {checkoutLoading ? (<><Loader2 className="h-4 w-4 animate-spin" />Iniciando pago...</>) : (<><CreditCard className="h-4 w-4" />Pagar con Tebex<ChevronRight className="h-4 w-4 opacity-70" /></>)}
             </button>
             <button onClick={() => handleDiscordFallback("Elegiste comprar directo por Discord.")}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-semibold text-white/50 hover:text-white/80 transition-colors text-xs"
-              style={{ background: "rgba(88,101,242,0.07)", border: "1px solid rgba(88,101,242,0.2)" }}>
+              className="w-full flex items-center justify-center gap-2 py-2.5 font-semibold text-white/50 hover:text-white/80 transition-colors text-xs"
+              style={{ background: "rgba(88,101,242,0.07)", border: "1px solid rgba(88,101,242,0.2)", clipPath: "polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)" }}>
               <DiscordIcon size={13} />O compra por Discord
             </button>
             <div className="flex items-center justify-center gap-4">

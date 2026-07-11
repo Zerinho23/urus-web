@@ -46,8 +46,8 @@ export default function Footer() {
           <div className="flex items-center gap-2 mt-4">
             {[YTIcon, IGIcon, TikTokIcon, DiscordIcon].map((Icon, i) => (
               <a key={i} href="#" target="_blank" rel="noopener noreferrer"
-                className="w-9 h-9 flex items-center justify-center rounded-lg text-white/40 hover:text-white transition-all duration-200 hover:scale-110"
-                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                className="w-9 h-9 flex items-center justify-center text-white/40 hover:text-white transition-all duration-200 hover:scale-110"
+                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", clipPath: "polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)" }}>
                 <Icon />
               </a>
             ))}
@@ -81,8 +81,8 @@ export default function Footer() {
           { icon: Shield, label: "Anti-ban activo" },
           { icon: Lock, label: "Pago seguro con Tebex" },
         ].map(({ icon: Icon, label }) => (
-          <span key={label} className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium text-white/45"
-            style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
+          <span key={label} className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium font-mono uppercase tracking-wide text-white/45"
+            style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", clipPath: "polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)" }}>
             <Icon className="h-3.5 w-3.5 text-cyan-400/70" />
             {label}
           </span>

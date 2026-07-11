@@ -138,8 +138,8 @@ export default function Header() {
             href="https://discord.gg/panelurus"
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white transition-all duration-200 hover:scale-105 active:scale-95"
-            style={{ background: "linear-gradient(135deg, #5865F2, #4752c4)" }}
+            className="hidden sm:inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white uppercase tracking-wide transition-all duration-200 hover:scale-105 active:scale-95"
+            style={{ background: "linear-gradient(135deg, #5865F2, #4752c4)", clipPath: "polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)" }}
           >
             <DiscordIcon />
             Discord
@@ -147,13 +147,14 @@ export default function Header() {
 
           <button
             onClick={() => openCart(true)}
-            className="relative w-9 h-9 flex items-center justify-center rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-all"
+            className="relative w-9 h-9 flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10 transition-all"
+            style={{ border: "1px solid rgba(255,255,255,0.08)", clipPath: "polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)" }}
           >
             <ShoppingCart className="h-5 w-5" />
             {count > 0 && (
               <span
-                className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-extrabold text-black"
-                style={{ background: "#fbbf24" }}
+                className="absolute -top-1 -right-1 min-w-[16px] h-4 px-0.5 rounded-full flex items-center justify-center text-[10px] font-mono font-extrabold text-black"
+                style={{ background: "#fbbf24", boxShadow: "0 0 6px rgba(251,191,36,0.6)" }}
               >
                 {count > 9 ? "9+" : count}
               </span>
