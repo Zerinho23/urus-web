@@ -52,7 +52,7 @@ function FreeCard({ product }: { product: typeof freeProducts[0] }) {
       }} />
   );
   return (
-    <div className="relative flex flex-col overflow-hidden font-mono transition-all duration-300"
+    <div className="relative flex flex-col h-full overflow-hidden font-mono transition-all duration-300"
       style={{ backgroundColor: "#07080b", clipPath: "polygon(0 12px, 12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%)", border: `1px solid ${hovered ? "rgba(251,191,36,0.7)" : "rgba(251,191,36,0.35)"}`, boxShadow: hovered ? "0 0 32px rgba(251,191,36,0.2), 0 8px 32px rgba(0,0,0,0.6)" : "0 0 10px rgba(251,191,36,0.06), 0 4px 16px rgba(0,0,0,0.4)", transform: hovered ? "translateY(-4px)" : "none" }}
       onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
       {corner("tl")}{corner("tr")}{corner("bl")}{corner("br")}
@@ -162,9 +162,9 @@ export default function FreeProductsSection() {
           </div>
         </div>
       </Reveal>
-      <StaggerGroup className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-2xl mx-auto">
+      <StaggerGroup className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-2xl mx-auto items-stretch">
         {freeProducts.map((p) => (
-          <StaggerItem key={p.id}>
+          <StaggerItem key={p.id} className="h-full">
             <FreeCard product={p} />
           </StaggerItem>
         ))}
