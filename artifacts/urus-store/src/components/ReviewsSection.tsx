@@ -54,8 +54,8 @@ function ReviewCard({ review, index }: { review: Review; index: number }) {
   const lines = review.content.split("\n").filter(Boolean);
 
   return (
-    <div className="relative flex flex-col rounded-2xl overflow-hidden shrink-0 select-none"
-      style={{ width: "320px", background: "linear-gradient(160deg, #0f1117 0%, #0a0b0f 100%)", border: `1px solid ${hexToRgba(accent, 0.18)}`, boxShadow: `0 4px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.03)` }}>
+    <div className="relative flex flex-col overflow-hidden shrink-0 select-none"
+      style={{ width: "320px", background: "linear-gradient(160deg, #0f1117 0%, #0a0b0f 100%)", border: `1px solid ${hexToRgba(accent, 0.18)}`, boxShadow: `0 4px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.03)`, clipPath: "polygon(0 10px, 10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%)" }}>
       <div className="absolute top-0 left-0 right-0 h-[2px]" style={{ background: `linear-gradient(90deg, transparent, ${accent}, transparent)` }} />
       <div className="flex items-start justify-between p-5 pb-3">
         <div className="flex items-center gap-3">
@@ -86,8 +86,8 @@ function ReviewCard({ review, index }: { review: Review; index: number }) {
       </div>
       {review.product && (
         <div className="px-5 pb-2">
-          <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full"
-            style={{ background: hexToRgba(accent, 0.12), border: `1px solid ${hexToRgba(accent, 0.28)}`, color: accent }}>
+          <span className="inline-flex items-center gap-1 text-[10px] font-bold font-mono px-2.5 py-1 uppercase tracking-wide"
+            style={{ background: hexToRgba(accent, 0.12), border: `1px solid ${hexToRgba(accent, 0.28)}`, color: accent, clipPath: "polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px)" }}>
             <Shield className="h-2.5 w-2.5" />
             {review.product}
           </span>

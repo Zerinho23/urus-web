@@ -13,23 +13,33 @@ const features = [
 
 function FeatureCard({ f, index }: { f: typeof features[0]; index: number }) {
   const [hovered, setHovered] = useState(false);
+  const corner = (pos: string) => (
+    <span className="absolute w-3 h-3 pointer-events-none z-20 transition-opacity duration-300"
+      style={{
+        opacity: hovered ? 1 : 0, borderColor: f.color,
+        ...(pos === "tl" ? { top: 5, left: 5, borderTop: "2px solid", borderLeft: "2px solid" } : {}),
+        ...(pos === "br" ? { bottom: 5, right: 5, borderBottom: "2px solid", borderRight: "2px solid" } : {}),
+      }} />
+  );
   return (
     <div
-      className="relative rounded-2xl p-6 flex flex-col gap-4 transition-all duration-300 cursor-default"
+      className="relative p-6 flex flex-col gap-4 transition-all duration-300 cursor-default font-mono"
       style={{
         background: hovered ? `linear-gradient(135deg, ${f.bg} 0%, rgba(10,11,15,0.95) 100%)` : "linear-gradient(135deg, rgba(12,14,20,0.9) 0%, rgba(10,11,15,0.95) 100%)",
         border: `1px solid ${hovered ? f.border : "rgba(255,255,255,0.06)"}`,
         boxShadow: hovered ? `0 8px 40px rgba(0,0,0,0.5), 0 0 0 1px ${f.bg}, 0 0 30px ${f.glow}` : "0 2px 16px rgba(0,0,0,0.3)",
         transform: hovered ? "translateY(-4px)" : "translateY(0)",
+        clipPath: "polygon(0 10px, 10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%)",
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
+      {corner("tl")}{corner("br")}
       <div className="absolute top-4 right-4 text-xs font-black" style={{ color: hovered ? f.color : "rgba(255,255,255,0.07)", transition: "color 0.3s" }}>
         0{index + 1}
       </div>
-      <div className="w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-300"
-        style={{ background: f.bg, border: `1px solid ${f.border}`, color: f.color, boxShadow: hovered ? `0 0 20px ${f.glow}` : "none" }}>
+      <div className="w-14 h-14 flex items-center justify-center transition-all duration-300"
+        style={{ background: f.bg, border: `1px solid ${f.border}`, color: f.color, boxShadow: hovered ? `0 0 20px ${f.glow}` : "none", clipPath: "polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)" }}>
         {f.icon}
       </div>
       <div>
@@ -44,8 +54,8 @@ function FeatureCard({ f, index }: { f: typeof features[0]; index: number }) {
           <div className="font-extrabold text-lg leading-none" style={{ color: f.color }}>{f.stat}</div>
           <div className="text-white/30 text-[10px] mt-0.5 uppercase tracking-widest">{f.statLabel}</div>
         </div>
-        <div className="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300"
-          style={{ background: hovered ? f.bg : "rgba(255,255,255,0.03)", border: `1px solid ${hovered ? f.border : "rgba(255,255,255,0.06)"}`, color: hovered ? f.color : "rgba(255,255,255,0.2)" }}>
+        <div className="w-8 h-8 flex items-center justify-center transition-all duration-300"
+          style={{ background: hovered ? f.bg : "rgba(255,255,255,0.03)", border: `1px solid ${hovered ? f.border : "rgba(255,255,255,0.06)"}`, color: hovered ? f.color : "rgba(255,255,255,0.2)", clipPath: "polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px)" }}>
           <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12h15m0 0l-6-6m6 6l-6 6" />
           </svg>
@@ -81,8 +91,8 @@ export default function FeaturesSection() {
       </StaggerGroup>
       <Reveal
         delay={0.15}
-        className="mt-10 rounded-2xl px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4"
-        style={{ background: "linear-gradient(135deg, rgba(6,182,212,0.07) 0%, rgba(168,85,247,0.07) 100%)", border: "1px solid rgba(6,182,212,0.15)" }}
+        className="mt-10 px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4"
+        style={{ background: "linear-gradient(135deg, rgba(6,182,212,0.07) 0%, rgba(168,85,247,0.07) 100%)", border: "1px solid rgba(6,182,212,0.15)", clipPath: "polygon(0 16px, 16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%)" }}
       >
         <div>
           <p className="text-white font-extrabold text-lg">¿Listo para dominar?</p>
@@ -90,8 +100,8 @@ export default function FeaturesSection() {
         </div>
         <button
           onClick={() => document.getElementById("products")?.scrollIntoView({ behavior: "smooth" })}
-          className="shrink-0 px-6 py-3 rounded-xl font-bold text-sm text-black transition-all hover:scale-105 active:scale-95"
-          style={{ background: "linear-gradient(135deg, #06b6d4, #0891b2)", boxShadow: "0 0 20px rgba(6,182,212,0.35)" }}
+          className="shrink-0 px-6 py-3 font-bold text-sm text-black uppercase tracking-wide transition-all hover:scale-105 active:scale-95"
+          style={{ background: "linear-gradient(135deg, #06b6d4, #0891b2)", boxShadow: "0 0 20px rgba(6,182,212,0.35)", clipPath: "polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)" }}
         >
           Ver productos →
         </button>

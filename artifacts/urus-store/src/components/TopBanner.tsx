@@ -21,12 +21,12 @@ export default function TopBanner() {
             <p className="text-xs sm:text-sm font-medium text-orange-100 leading-tight">
               <span className="font-extrabold text-yellow-300">10% de descuento</span>
               {" "}con el cupón{" "}
-              <span className="font-extrabold text-white bg-white/10 px-1.5 py-0.5 rounded text-xs tracking-widest">URUS10</span>
+              <span className="font-extrabold text-white bg-white/10 px-1.5 py-0.5 font-mono text-xs tracking-widest" style={{ clipPath: "polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px)" }}>URUS10</span>
             </p>
             <button
               onClick={() => document.getElementById("products")?.scrollIntoView({ behavior: "smooth" })}
-              className="px-3 py-1 rounded-lg text-xs font-bold text-black transition-all hover:scale-105 shrink-0"
-              style={{ background: "linear-gradient(135deg, #fbbf24, #f59e0b)" }}
+              className="px-3 py-1 text-xs font-bold text-black uppercase tracking-wide transition-all hover:scale-105 shrink-0"
+              style={{ background: "linear-gradient(135deg, #fbbf24, #f59e0b)", clipPath: "polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)" }}
             >
               Usar cupón
             </button>
