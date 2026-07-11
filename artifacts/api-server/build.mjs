@@ -3,7 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { build as esbuild } from "esbuild";
 import esbuildPluginPino from "esbuild-plugin-pino";
-import { rm } from "node:fs/promises";
+import { rm, readdir, readFile, writeFile } from "node:fs/promises";
 
 // Plugins (e.g. 'esbuild-plugin-pino') may use `require` to resolve dependencies
 globalThis.require = createRequire(import.meta.url);
@@ -14,6 +14,33 @@ async function buildAll() {
   const distDir = path.resolve(artifactDir, "dist");
   await rm(distDir, { recursive: true, force: true });
 
+  await runEsbuild(distDir);
+  await patchPinoBundledAbsolutePaths(distDir);
+}
+
+// The pino esbuild plugin bakes the absolute *build-machine* output directory
+// into the bundled worker files (as a literal string inside
+// `pinoBundlerAbsolutePath`). That path does not exist on the deploy target
+// (e.g. Railway), causing `Cannot find module '.../dist/thread-stream-worker.mjs'`
+// at runtime. Rewrite it to use `__dirname`, which our banner below computes
+// at runtime from `import.meta.url`, so the bundle is portable regardless of
+// where it was built.
+async function patchPinoBundledAbsolutePaths(distDir) {
+  const files = await readdir(distDir);
+  for (const file of files) {
+    if (!file.endsWith(".mjs")) continue;
+    const filePath = path.resolve(distDir, file);
+    const contents = await readFile(filePath, "utf8");
+    // Fresh regex per file: avoids stateful `lastIndex` bugs from reusing a
+    // global-flag regex across multiple `.test()` calls.
+    if (!/const outputDir = "[^"]*";/.test(contents)) continue;
+    const patched = contents.replace(/const outputDir = "[^"]*";/g, "const outputDir = __dirname;");
+    await writeFile(filePath, patched, "utf8");
+    console.log(`[build] patched hardcoded pino outputDir in ${file}`);
+  }
+}
+
+async function runEsbuild(distDir) {
   await esbuild({
     entryPoints: [path.resolve(artifactDir, "src/index.ts")],
     platform: "node",
