@@ -39,7 +39,12 @@ export default function CartDrawer() {
     else { setCouponError("Cupón inválido"); setTimeout(() => setCouponError(""), 2000); }
   };
 
-  const handleDiscordFallback = () => { window.open(`https://discord.gg/panelurus`, "_blank"); };
+  const handleDiscordFallback = (reason: string) => {
+    console.warn("[Tebex] Falling back to Discord:", reason);
+    setCheckoutError(`${reason} Te llevamos a Discord para completar la compra.`);
+    setTimeout(() => setCheckoutError(""), 8000);
+    window.open(`https://discord.gg/panelurus`, "_blank");
+  };
 
   const handleTebexCheckout = async () => {
     setCheckoutLoading(true);
@@ -74,7 +79,14 @@ export default function CartDrawer() {
         throw new Error(`Error ${res.status} en ${endpoint} — Verifica que VITE_API_BASE_URL termine en /api (ej: https://tu-app.up.railway.app/api).`);
       }
       if (!res.ok) {
-        if (data["error"] === "tebex_not_configured" || data["error"] === "products_not_configured") { handleDiscordFallback(); return; }
+        if (data["error"] === "tebex_not_configured") {
+          handleDiscordFallback("Tebex no está configurado en el servidor todavía.");
+          return;
+        }
+        if (data["error"] === "products_not_configured") {
+          handleDiscordFallback("Este producto aún no está vinculado a un paquete de Tebex.");
+          return;
+        }
         const failedDetail = Array.isArray(data["failed"]) ? (data["failed"] as string[]).join(" | ") : undefined;
         console.error("[Tebex] Checkout error:", data["error"], failedDetail ?? "");
         throw new Error(
@@ -224,7 +236,7 @@ export default function CartDrawer() {
               style={{ background: checkoutLoading ? "rgba(6,182,212,0.3)" : "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)", boxShadow: checkoutLoading ? "none" : "0 0 30px rgba(6,182,212,0.4), 0 4px 20px rgba(0,0,0,0.4)" }}>
               {checkoutLoading ? (<><Loader2 className="h-4 w-4 animate-spin" />Iniciando pago...</>) : (<><CreditCard className="h-4 w-4" />Pagar con Tebex<ChevronRight className="h-4 w-4 opacity-70" /></>)}
             </button>
-            <button onClick={handleDiscordFallback}
+            <button onClick={() => handleDiscordFallback("Elegiste comprar directo por Discord.")}
               className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-semibold text-white/50 hover:text-white/80 transition-colors text-xs"
               style={{ background: "rgba(88,101,242,0.07)", border: "1px solid rgba(88,101,242,0.2)" }}>
               <DiscordIcon size={13} />O compra por Discord
