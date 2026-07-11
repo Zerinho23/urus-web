@@ -11,6 +11,8 @@ import CartButton from "@/components/CartButton";
 const FreeProductsSection = lazy(() => import("@/components/FreeProductsSection"));
 const ReviewsSection = lazy(() => import("@/components/ReviewsSection"));
 const FeaturesSection = lazy(() => import("@/components/FeaturesSection"));
+const StatsSection = lazy(() => import("@/components/StatsSection"));
+const FAQSection = lazy(() => import("@/components/FAQSection"));
 
 function SectionFallback() {
   return (
@@ -34,8 +36,10 @@ export default function Home() {
           <ProductsSection />
           <Suspense fallback={<SectionFallback />}>
             <FreeProductsSection />
+            <StatsSection />
             <ReviewsSection />
             <FeaturesSection />
+            <FAQSection />
           </Suspense>
         </div>
       </main>

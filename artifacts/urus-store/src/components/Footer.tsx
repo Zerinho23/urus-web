@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import { Shield, Zap, Lock } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
 
 const YTIcon = () => (
@@ -67,12 +68,26 @@ export default function Footer() {
           <h4 className="text-white font-semibold text-sm mb-4">Soporte</h4>
           <ul className="flex flex-col gap-2">
             <li><a href="https://discord.gg/panelurus" target="_blank" rel="noopener noreferrer" className="text-white/40 text-sm hover:text-white transition-colors">Discord</a></li>
-            <li><a href="https://discord.gg/panelurus" target="_blank" rel="noopener noreferrer" className="text-white/40 text-sm hover:text-white transition-colors">FAQ</a></li>
+            <li><a href="#faq" className="text-white/40 text-sm hover:text-white transition-colors">FAQ</a></li>
             <li><Link href="/terminos" className="text-white/40 text-sm hover:text-white transition-colors">Política de reembolso</Link></li>
             <li><a href="https://discord.gg/panelurus" target="_blank" rel="noopener noreferrer" className="text-white/40 text-sm hover:text-white transition-colors">Contacto</a></li>
           </ul>
         </div>
       </Reveal>
+
+      <div className="flex flex-wrap items-center gap-3 mb-6">
+        {[
+          { icon: Zap, label: "Entrega inmediata" },
+          { icon: Shield, label: "Anti-ban activo" },
+          { icon: Lock, label: "Pago seguro con Tebex" },
+        ].map(({ icon: Icon, label }) => (
+          <span key={label} className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium text-white/45"
+            style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
+            <Icon className="h-3.5 w-3.5 text-cyan-400/70" />
+            {label}
+          </span>
+        ))}
+      </div>
 
       <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
         <p className="text-white/30 text-xs">© {year} Urus Store. Todos los derechos reservados.</p>

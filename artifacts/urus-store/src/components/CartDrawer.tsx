@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { getApiBase } from "@/lib/api";
-import { X, ShoppingCart, Trash2, Tag, ChevronRight, Package, Zap, Shield, Loader2, CreditCard } from "lucide-react";
+import { X, ShoppingCart, Trash2, Tag, ChevronRight, Package, Zap, Shield, Loader2, CreditCard, Minus, Plus } from "lucide-react";
 import { useCart, itemKey } from "@/context/CartContext";
 
 const DiscordIcon = ({ size = 16 }: { size?: number }) => (
@@ -20,7 +20,7 @@ function hexToRgba(hex: string, alpha: number) {
 }
 
 export default function CartDrawer() {
-  const { items, count, total, open, setOpen, removeItem, clearCart } = useCart();
+  const { items, count, total, open, setOpen, removeItem, updateQty, clearCart } = useCart();
   const [couponInput, setCouponInput] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
   const [couponError, setCouponError] = useState("");
@@ -167,13 +167,26 @@ export default function CartDrawer() {
                   <div className="flex-1 min-w-0">
                     <p className="text-white font-bold text-sm leading-tight truncate">{item.name}</p>
                     <p className="text-white/35 text-[11px] mt-0.5">{item.game}</p>
-                    <div className="flex items-center gap-1.5 mt-1.5">
-                      <span className="font-extrabold text-base" style={{ color: item.accentColor }}>${(item.price * item.quantity).toFixed(2)}</span>
-                      <span className="text-white/25 text-[10px]">USD</span>
+                    <div className="flex items-center justify-between mt-2">
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-extrabold text-base" style={{ color: item.accentColor }}>${(item.price * item.quantity).toFixed(2)}</span>
+                        <span className="text-white/25 text-[10px]">USD</span>
+                      </div>
+                      <div className="flex items-center gap-1 rounded-lg overflow-hidden" style={{ border: `1px solid ${hexToRgba(item.accentColor, 0.3)}` }}>
+                        <button onClick={() => updateQty(itemKey(item), item.quantity - 1)}
+                          className="w-6 h-6 flex items-center justify-center text-white/50 hover:text-white transition-colors" style={{ background: "rgba(255,255,255,0.04)" }}>
+                          <Minus className="h-3 w-3" />
+                        </button>
+                        <span className="w-6 text-center text-xs font-bold text-white tabular-nums">{item.quantity}</span>
+                        <button onClick={() => updateQty(itemKey(item), item.quantity + 1)}
+                          className="w-6 h-6 flex items-center justify-center transition-colors" style={{ background: hexToRgba(item.accentColor, 0.15), color: item.accentColor }}>
+                          <Plus className="h-3 w-3" />
+                        </button>
+                      </div>
                     </div>
                   </div>
                   <button onClick={() => removeItem(itemKey(item))}
-                    className="w-7 h-7 rounded-lg flex items-center justify-center text-white/20 hover:text-red-400 hover:bg-red-500/10 transition-all opacity-0 group-hover:opacity-100 shrink-0">
+                    className="w-7 h-7 rounded-lg flex items-center justify-center text-white/20 hover:text-red-400 hover:bg-red-500/10 transition-all opacity-0 group-hover:opacity-100 shrink-0 self-start">
                     <X className="h-3.5 w-3.5" />
                   </button>
                 </div>

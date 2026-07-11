@@ -34,6 +34,23 @@ function hexToRgba(hex: string, alpha: number) {
   return `rgba(${r},${g},${b},${alpha})`;
 }
 
+function parseDays(duration: string): number {
+  const n = parseInt(duration, 10) || 1;
+  if (duration.includes("año")) return n * 365;
+  if (duration.includes("mes")) return n * 30;
+  return n;
+}
+
+function bestValueIndex(plans: Plan[]): number {
+  let best = 0;
+  let bestRate = Infinity;
+  plans.forEach((p, i) => {
+    const rate = p.price / parseDays(p.duration);
+    if (rate < bestRate) { bestRate = rate; best = i; }
+  });
+  return best;
+}
+
 function ProductCard({ product }: { product: typeof products[0] }) {
   const [hovered, setHovered] = useState(false);
   const [added, setAdded] = useState(false);
@@ -44,6 +61,7 @@ function ProductCard({ product }: { product: typeof products[0] }) {
   const glow = hexToRgba(c, 0.25);
   const hasImage = "image" in product && product.image;
   const plan = product.plans[selectedPlan];
+  const bestIdx = bestValueIndex(product.plans);
 
   const handleAdd = () => {
     addItem({ id: product.id, name: `${product.name} — ${plan.duration}`, game: product.game, price: plan.price, accentColor: c });
@@ -119,7 +137,10 @@ function ProductCard({ product }: { product: typeof products[0] }) {
           </div>
           <button onClick={() => setShowPlans(!showPlans)} className="w-full flex items-center justify-between px-3 py-1.5 rounded-lg mb-2 text-[11px] font-semibold transition-all"
             style={{ background: hexToRgba(c, 0.08), border: `1px solid ${hexToRgba(c, 0.2)}`, color: c }}>
-            <span>{plan.duration} — ${plan.price} USD</span>
+            <span className="flex items-center gap-1.5">
+              {plan.duration} — ${plan.price} USD
+              {selectedPlan === bestIdx && <span className="text-[8px] font-black uppercase tracking-wide px-1.5 py-0.5 rounded" style={{ background: hexToRgba(c, 0.25), color: c }}>Mejor precio</span>}
+            </span>
             <ChevronDown className="h-3 w-3 transition-transform" style={{ transform: showPlans ? "rotate(180deg)" : "rotate(0)" }} />
           </button>
           {showPlans && (
@@ -127,7 +148,10 @@ function ProductCard({ product }: { product: typeof products[0] }) {
               {product.plans.map((p, i) => (
                 <button key={i} onClick={() => { setSelectedPlan(i); setShowPlans(false); }} className="w-full flex items-center justify-between px-3 py-2 text-[11px] transition-all"
                   style={{ background: selectedPlan === i ? hexToRgba(c, 0.15) : "transparent", borderBottom: i < product.plans.length - 1 ? `1px solid ${hexToRgba(c, 0.1)}` : "none", color: selectedPlan === i ? c : "rgba(255,255,255,0.5)" }}>
-                  <span className="font-semibold">{p.duration}</span>
+                  <span className="font-semibold flex items-center gap-1.5">
+                    {p.duration}
+                    {i === bestIdx && <Star className="h-2.5 w-2.5" fill={c} style={{ color: c }} />}
+                  </span>
                   <span className="font-extrabold">${p.price} USD</span>
                 </button>
               ))}
