@@ -145,11 +145,14 @@ router.post("/checkout", checkoutLimiter, async (req, res) => {
       return;
     }
 
-    // Non-auth hard failures with nothing added → block
+    // Non-auth hard failures with nothing added → this is a genuine Tebex API
+    // rejection (bad package id, unpublished package, currency mismatch, etc.),
+    // NOT a "not configured" case — use a distinct error code so the frontend
+    // surfaces the real failure instead of silently falling back to Discord.
     if (addedCount === 0 && failed.length > 0) {
-      res.status(422).json({
-        error: "products_not_configured",
-        message: "No se pudieron agregar los productos al basket de Tebex. Revisa los IDs en tebex-packages.ts.",
+      res.status(502).json({
+        error: "tebex_package_error",
+        message: "Tebex rechazó el/los producto(s). Revisa que el paquete esté publicado y activo en tu tienda Tebex.",
         failed,
       });
       return;

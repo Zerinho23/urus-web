@@ -75,7 +75,12 @@ export default function CartDrawer() {
       }
       if (!res.ok) {
         if (data["error"] === "tebex_not_configured" || data["error"] === "products_not_configured") { handleDiscordFallback(); return; }
-        throw new Error((data["message"] as string | undefined) ?? "Error al procesar el pago");
+        const failedDetail = Array.isArray(data["failed"]) ? (data["failed"] as string[]).join(" | ") : undefined;
+        console.error("[Tebex] Checkout error:", data["error"], failedDetail ?? "");
+        throw new Error(
+          ((data["message"] as string | undefined) ?? "Error al procesar el pago") +
+            (failedDetail ? ` (${failedDetail})` : "")
+        );
       }
       if (data["checkoutUrl"]) window.location.href = data["checkoutUrl"] as string;
     } catch (err) {
