@@ -57,8 +57,8 @@ export const TEBEX_PACKAGES: Record<string, number> = {
   "Panel iOS — 60 días": 0,
 
   "Panel Undetected — 7 días":  0,
-  "Panel Undetected — 15 días": 0,
-  "Panel Undetected — 30 días": 0,
+  "Panel Undetected — 15 días": 7552434,
+  "Panel Undetected — 30 días": 7552437,
 
   "Panel Blood Supreme — 7 días":  0,
   "Panel Blood Supreme — 15 días": 0,
