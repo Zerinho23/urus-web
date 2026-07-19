@@ -46,8 +46,8 @@ export default function Footer() {
           <div className="flex items-center gap-2 mt-4">
             {[
               { Icon: YTIcon, href: "https://youtube.com/@jaxx_zin" },
-              { Icon: IGIcon, href: "#" },
-              { Icon: TikTokIcon, href: "#" },
+              { Icon: IGIcon, href: "https://www.instagram.com/enrique_laen" },
+              { Icon: TikTokIcon, href: "https://www.tiktok.com/@jax_urc" },
               { Icon: DiscordIcon, href: "https://discord.gg/panelurus" },
             ].map(({ Icon, href }, i) => (
               <a key={i} href={href} target="_blank" rel="noopener noreferrer"
