@@ -118,9 +118,9 @@ export default function Header() {
         <div className="flex items-center gap-2">
           <div className="hidden sm:flex items-center gap-0.5">
             {[
-              { Icon: YTIcon, href: "#" },
-              { Icon: IGIcon, href: "#" },
-              { Icon: TikTokIcon, href: "#" },
+              { Icon: YTIcon, href: "https://youtube.com/@jaxx_zin" },
+              { Icon: IGIcon, href: "https://www.instagram.com/enrique_laen" },
+              { Icon: TikTokIcon, href: "https://www.tiktok.com/@jax_urc" },
             ].map(({ Icon, href }, i) => (
               <a
                 key={i}
