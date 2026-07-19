@@ -2,7 +2,6 @@ import { useState } from "react";
 import { X, ShoppingCart, Trash2, Tag, Package, Zap, Shield, Minus, Plus } from "lucide-react";
 import { PayPalButtons } from "@paypal/react-paypal-js";
 import { useCart, itemKey } from "@/context/CartContext";
-import { getApiBase } from "@/lib/api";
 
 const DiscordIcon = ({ size = 16 }: { size?: number }) => (
   <svg width={size} height={size * 0.76} viewBox="0 0 127.14 96.36" fill="currentColor">
@@ -195,29 +194,27 @@ export default function CartDrawer() {
                   <p className="text-white/30 text-[10px] uppercase tracking-widest text-center mb-2 font-mono">Pagar con PayPal</p>
                   <PayPalButtons
                     style={{ layout: "vertical", color: "gold", shape: "rect", label: "pay", height: 45 }}
-                    createOrder={async () => {
-                      const res = await fetch(`${getApiBase()}/paypal/create-order`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ amount: finalTotal }),
-                      });
-                      if (!res.ok) {
-                        const err = await res.json().catch(() => ({ error: res.statusText })) as { error: string };
-                        throw new Error(err.error ?? "create-order failed");
-                      }
-                      const data = (await res.json()) as { id: string };
-                      if (!data.id) throw new Error("No order ID returned");
-                      return data.id;
-                    }}
-                    onApprove={async (data) => {
-                      await fetch(`${getApiBase()}/paypal/capture-order/${data.orderID}`, { method: "POST" });
-                      setPaymentSuccess(true);
-                      clearCart();
-                      setTimeout(() => { setPaymentSuccess(false); setOpen(false); }, 4000);
-                    }}
+                    createOrder={(_data, actions) =>
+                      actions.order.create({
+                        intent: "CAPTURE",
+                        purchase_units: [{
+                          amount: {
+                            currency_code: "USD",
+                            value: finalTotal.toFixed(2),
+                          },
+                        }],
+                      })
+                    }
+                    onApprove={(_data, actions) =>
+                      actions.order!.capture().then(() => {
+                        setPaymentSuccess(true);
+                        clearCart();
+                        setTimeout(() => { setPaymentSuccess(false); setOpen(false); }, 4000);
+                      })
+                    }
                     onError={(err) => {
                       console.error("PayPal onError:", err);
-                      alert(`Error al procesar el pago: ${String(err)}`);
+                      alert("Error al procesar el pago. Revisa que tu cuenta PayPal sandbox esté activa e intenta de nuevo.");
                     }}
                   />
                 </div>
