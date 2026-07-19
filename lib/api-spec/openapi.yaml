@@ -11,8 +11,6 @@ tags:
     description: Health operations
   - name: reviews
     description: Customer reviews
-  - name: checkout
-    description: Tebex checkout
 paths:
   /healthz:
     get:
@@ -58,25 +56,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Review"
-
-  /checkout:
-    post:
-      operationId: createCheckout
-      tags: [checkout]
-      summary: Create a Tebex checkout basket
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CheckoutInput"
-      responses:
-        "200":
-          description: Checkout URL
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CheckoutResult"
 
 components:
   schemas:
@@ -134,38 +113,3 @@ components:
           type: integer
         imageUrl:
           type: ["string", "null"]
-
-    CheckoutInput:
-      type: object
-      required: [items]
-      properties:
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/CartItem"
-        completeUrl:
-          type: ["string", "null"]
-        cancelUrl:
-          type: ["string", "null"]
-
-    CartItem:
-      type: object
-      required: [name]
-      properties:
-        name:
-          type: string
-        quantity:
-          type: integer
-
-    CheckoutResult:
-      type: object
-      required: [checkoutUrl, basketIdent]
-      properties:
-        checkoutUrl:
-          type: string
-        basketIdent:
-          type: string
-        skipped:
-          type: array
-          items:
-            type: string

@@ -22,8 +22,8 @@ export default function Terms() {
           <section>
             <h2 className="text-white font-semibold text-lg mb-2">2. Pagos</h2>
             <p>
-              Todos los pagos se procesan a través de Tebex. Al completar una compra, aceptas también los
-              términos de servicio de Tebex como proveedor de pagos.
+              Las compras se coordinan directamente a través de nuestro servidor de Discord. Un agente de
+              soporte te guiará con el proceso de pago y la entrega del producto.
             </p>
           </section>
 

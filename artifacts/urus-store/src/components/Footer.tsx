@@ -79,7 +79,7 @@ export default function Footer() {
         {[
           { icon: Zap, label: "Entrega inmediata" },
           { icon: Shield, label: "Anti-ban activo" },
-          { icon: Lock, label: "Pago seguro con Tebex" },
+          { icon: Lock, label: "Pago 100% seguro" },
         ].map(({ icon: Icon, label }) => (
           <span key={label} className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium font-mono uppercase tracking-wide text-white/45"
             style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", clipPath: "polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)" }}>

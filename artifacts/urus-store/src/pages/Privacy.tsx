@@ -13,25 +13,25 @@ export default function Privacy() {
           <section>
             <h2 className="text-white font-semibold text-lg mb-2">1. Información que recopilamos</h2>
             <p>
-              Al usar Urus Store recopilamos información necesaria para procesar tu compra y brindarte soporte:
+              Al usar Urus Store recopilamos información necesaria para brindarte soporte:
               tu nombre de usuario de Discord, el contenido de las reseñas que publicas voluntariamente, y datos
               técnicos básicos (dirección IP, tipo de navegador) para prevenir abuso del servicio.
             </p>
           </section>
 
           <section>
-            <h2 className="text-white font-semibold text-lg mb-2">2. Procesamiento de pagos</h2>
+            <h2 className="text-white font-semibold text-lg mb-2">2. Proceso de compra</h2>
             <p>
-              Los pagos se procesan íntegramente a través de <strong>Tebex</strong>, un proveedor externo de
-              pagos. No almacenamos ni tenemos acceso a los datos de tu tarjeta o método de pago; esa
-              información es manejada directamente por Tebex conforme a su propia política de privacidad.
+              Las compras se coordinan directamente a través de Discord. No almacenamos datos de tarjetas
+              ni métodos de pago en nuestros servidores. Toda información financiera se maneja fuera de
+              esta plataforma.
             </p>
           </section>
 
           <section>
             <h2 className="text-white font-semibold text-lg mb-2">3. Uso de la información</h2>
             <p>
-              Usamos tus datos únicamente para: procesar y entregar tu compra, brindarte soporte técnico,
+              Usamos tus datos únicamente para: brindarte soporte técnico,
               mostrar reseñas públicas que decidas publicar, y mejorar la seguridad y funcionamiento de la
               tienda. No vendemos ni compartimos tu información con terceros con fines publicitarios.
             </p>

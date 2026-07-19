@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { getApiBase } from "@/lib/api";
-import { MessageSquare, Star, ThumbsUp, Shield, Users } from "lucide-react";
+import { MessageSquare, Star, Shield, ThumbsUp, Users } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
 
 interface Review {
@@ -116,9 +116,16 @@ function ReviewCard({ review, index }: { review: Review; index: number }) {
   );
 }
 
+const MARQUEE_STYLE = `
+@keyframes urus-marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+`;
+
 export default function ReviewsSection() {
   const [reviews, setReviews] = useState<Review[]>(FALLBACK_REVIEWS);
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetch(`${getApiBase()}/reviews`)
@@ -127,38 +134,18 @@ export default function ReviewsSection() {
       .catch(() => {});
   }, []);
 
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    let animId: number;
-    let paused = false;
-    const tick = () => {
-      if (!paused) {
-        el.scrollLeft += 0.4;
-        if (el.scrollLeft >= el.scrollWidth - el.clientWidth - 2) el.scrollLeft = 0;
-      }
-      animId = requestAnimationFrame(tick);
-    };
-    animId = requestAnimationFrame(tick);
-    const pause = () => { paused = true; };
-    const resume = () => { paused = false; };
-    el.addEventListener("mouseenter", pause);
-    el.addEventListener("mouseleave", resume);
-    el.addEventListener("touchstart", pause, { passive: true });
-    el.addEventListener("touchend", resume);
-    return () => {
-      cancelAnimationFrame(animId);
-      el.removeEventListener("mouseenter", pause);
-      el.removeEventListener("mouseleave", resume);
-    };
-  }, [reviews]);
-
   const totalReviews = reviews.length;
   const avgRating = (reviews.reduce((s, r) => s + r.rating, 0) / totalReviews).toFixed(1);
+  // Duplicate so the CSS marquee can loop seamlessly: animate -50% = exactly one copy
   const doubled = [...reviews, ...reviews];
+
+  const pauseAnim = () => { if (trackRef.current) trackRef.current.style.animationPlayState = "paused"; };
+  const resumeAnim = () => { if (trackRef.current) trackRef.current.style.animationPlayState = "running"; };
 
   return (
     <section id="reviews" className="py-20 overflow-hidden">
+      <style>{MARQUEE_STYLE}</style>
+
       <Reveal className="flex flex-col items-center text-center gap-4 mb-10 px-4">
         <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest"
           style={{ background: "rgba(88,101,242,0.12)", border: "1px solid rgba(88,101,242,0.3)", color: "#7289da" }}>
@@ -189,10 +176,28 @@ export default function ReviewsSection() {
           </div>
         </div>
       </Reveal>
+
       <div className="relative">
-        <div ref={scrollRef} className="flex gap-4 overflow-x-auto pb-2"
-          style={{ scrollbarWidth: "none", msOverflowStyle: "none", paddingLeft: "max(1.5rem, calc((100vw - 1200px) / 2))", paddingRight: "max(1.5rem, calc((100vw - 1200px) / 2))" }}>
-          {doubled.map((r, i) => <ReviewCard key={`${r.id}-${i}`} review={r} index={i} />)}
+        {/* Overflow hidden clips the track; the track animates via CSS keyframes */}
+        <div style={{ overflow: "hidden" }}>
+          <div
+            ref={trackRef}
+            className="flex gap-4 pb-2"
+            style={{
+              width: "max-content",
+              animation: `urus-marquee ${reviews.length * 5}s linear infinite`,
+              willChange: "transform",
+              paddingLeft: "max(1.5rem, calc((100vw - 1200px) / 2))",
+            }}
+            onMouseEnter={pauseAnim}
+            onMouseLeave={resumeAnim}
+            onTouchStart={pauseAnim}
+            onTouchEnd={resumeAnim}
+          >
+            {doubled.map((r, i) => (
+              <ReviewCard key={`${r.id}-${i}`} review={r} index={i} />
+            ))}
+          </div>
         </div>
         <div className="absolute inset-y-0 left-0 w-24 pointer-events-none" style={{ background: "linear-gradient(90deg, #050608 0%, transparent 100%)" }} />
         <div className="absolute inset-y-0 right-0 w-24 pointer-events-none" style={{ background: "linear-gradient(270deg, #050608 0%, transparent 100%)" }} />

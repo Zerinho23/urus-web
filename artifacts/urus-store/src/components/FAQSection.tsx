@@ -4,10 +4,10 @@ import { Reveal, StaggerGroup, StaggerItem } from "@/components/Reveal";
 
 const faqs = [
   { q: "¿Los productos son realmente indetectables?", a: "Sí. Todos nuestros paneles y bypass se prueban contra los sistemas anti-cheat vigentes antes de publicarse, y se actualizan apenas se detecta un parche nuevo." },
-  { q: "¿Cómo recibo mi producto después de comprar?", a: "La entrega es inmediata. Tras completar el pago con Tebex recibirás tus credenciales y la guía de instalación al instante, sin esperas ni verificación manual." },
+  { q: "¿Cómo recibo mi producto después de comprar?", a: "La entrega es inmediata. Tras completar tu compra por Discord, un agente de soporte te enviará las credenciales y la guía de instalación al instante." },
   { q: "¿Qué pasa si me banean usando el producto?", a: "Nuestros productos cuentan con protección anti-ban activa. En el caso puntual de un ban, nuestro soporte en Discord te ayuda a resolverlo según la política de cada producto." },
   { q: "¿Puedo usar el cupón de bienvenida junto a otras promociones?", a: "El cupón de bienvenida se puede aplicar en cualquier compra desde el carrito. No es acumulable con otros cupones de descuento activos al mismo tiempo." },
-  { q: "¿Qué métodos de pago aceptan?", a: "El checkout se procesa mediante Tebex con cifrado SSL, aceptando tarjetas, PayPal y otros métodos locales según tu región." },
+  { q: "¿Cómo realizo el pago?", a: "Las compras se coordinan directamente por Discord. Un agente de soporte te guiará con el método de pago disponible y te entregará el producto una vez confirmado." },
   { q: "¿Tienen productos gratuitos para probar antes de pagar?", a: "Sí, en la sección de productos gratis puedes activar una prueba de 3 días que se renueva cada semana, sin necesidad de tarjeta." },
 ];
 

@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { getApiBase } from "@/lib/api";
-import { X, ShoppingCart, Trash2, Tag, ChevronRight, Package, Zap, Shield, Loader2, CreditCard, Minus, Plus } from "lucide-react";
+import { X, ShoppingCart, Trash2, Tag, Package, Zap, Shield, Minus, Plus } from "lucide-react";
 import { useCart, itemKey } from "@/context/CartContext";
 
 const DiscordIcon = ({ size = 16 }: { size?: number }) => (
@@ -24,8 +23,6 @@ export default function CartDrawer() {
   const [couponInput, setCouponInput] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
   const [couponError, setCouponError] = useState("");
-  const [checkoutLoading, setCheckoutLoading] = useState(false);
-  const [checkoutError, setCheckoutError] = useState("");
 
   if (!open) return null;
 
@@ -39,69 +36,10 @@ export default function CartDrawer() {
     else { setCouponError("Cupón inválido"); setTimeout(() => setCouponError(""), 2000); }
   };
 
-  const handleDiscordFallback = (reason: string) => {
-    console.warn("[Tebex] Falling back to Discord:", reason);
-    setCheckoutError(`${reason} Te llevamos a Discord para completar la compra.`);
-    setTimeout(() => setCheckoutError(""), 8000);
+  const handleDiscordCheckout = () => {
+    const itemList = items.map((i) => `${i.name} x${i.quantity}`).join(", ");
+    const msg = encodeURIComponent(`Hola, quiero comprar: ${itemList}${appliedCoupon ? ` (cupón: ${appliedCoupon})` : ""}`);
     window.open(`https://discord.gg/panelurus`, "_blank");
-  };
-
-  const handleTebexCheckout = async () => {
-    setCheckoutLoading(true);
-    setCheckoutError("");
-    try {
-      const base = (import.meta.env.BASE_URL ?? "/").replace(/\/$/, "");
-      const origin = window.location.origin;
-      const endpoint = `${getApiBase()}/checkout`;
-      console.log("[Tebex] POST", endpoint);
-      let res: Response;
-      try {
-        res = await fetch(endpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            items: items.map((i) => ({ name: i.name, quantity: i.quantity })),
-            completeUrl: `${origin}${base}/?checkout=success`,
-            cancelUrl: `${origin}${base}/?checkout=cancelled`,
-          }),
-        });
-      } catch (networkErr) {
-        const msg = networkErr instanceof Error ? networkErr.message : "Error de red";
-        console.error("[Tebex] Network/CORS error:", networkErr);
-        throw new Error(`No se pudo conectar con el servidor (${msg}). Revisa la URL de la API en Vercel.`);
-      }
-      const raw = await res.text();
-      console.log("[Tebex] Status:", res.status, "Body:", raw.slice(0, 300));
-      let data: Record<string, unknown>;
-      try {
-        data = JSON.parse(raw) as Record<string, unknown>;
-      } catch {
-        throw new Error(`Error ${res.status} en ${endpoint} — Verifica que VITE_API_BASE_URL termine en /api (ej: https://tu-app.up.railway.app/api).`);
-      }
-      if (!res.ok) {
-        if (data["error"] === "tebex_not_configured") {
-          handleDiscordFallback("Tebex no está configurado en el servidor todavía.");
-          return;
-        }
-        if (data["error"] === "products_not_configured") {
-          handleDiscordFallback("Este producto aún no está vinculado a un paquete de Tebex.");
-          return;
-        }
-        const failedDetail = Array.isArray(data["failed"]) ? (data["failed"] as string[]).join(" | ") : undefined;
-        console.error("[Tebex] Checkout error:", data["error"], failedDetail ?? "");
-        throw new Error(
-          ((data["message"] as string | undefined) ?? "Error al procesar el pago") +
-            (failedDetail ? ` (${failedDetail})` : "")
-        );
-      }
-      if (data["checkoutUrl"]) window.location.href = data["checkoutUrl"] as string;
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : "Error al iniciar el pago";
-      setCheckoutError(msg);
-      setTimeout(() => setCheckoutError(""), 6000);
-    } finally {
-      setCheckoutLoading(false);
-    }
   };
 
   return (
@@ -241,18 +179,11 @@ export default function CartDrawer() {
                 </div>
               </div>
             </div>
-            {checkoutError && (
-              <div className="px-4 py-3 text-xs text-red-300 font-medium" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.25)", clipPath: "polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)" }}>{checkoutError}</div>
-            )}
-            <button onClick={handleTebexCheckout} disabled={checkoutLoading}
-              className="w-full flex items-center justify-center gap-2.5 py-4 font-extrabold text-white uppercase tracking-wide transition-all text-sm disabled:opacity-70 disabled:cursor-not-allowed"
-              style={{ background: checkoutLoading ? "rgba(6,182,212,0.3)" : "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)", boxShadow: checkoutLoading ? "none" : "0 0 30px rgba(6,182,212,0.4), 0 4px 20px rgba(0,0,0,0.4)", clipPath: "polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)" }}>
-              {checkoutLoading ? (<><Loader2 className="h-4 w-4 animate-spin" />Iniciando pago...</>) : (<><CreditCard className="h-4 w-4" />Pagar con Tebex<ChevronRight className="h-4 w-4 opacity-70" /></>)}
-            </button>
-            <button onClick={() => handleDiscordFallback("Elegiste comprar directo por Discord.")}
-              className="w-full flex items-center justify-center gap-2 py-2.5 font-semibold text-white/50 hover:text-white/80 transition-colors text-xs"
-              style={{ background: "rgba(88,101,242,0.07)", border: "1px solid rgba(88,101,242,0.2)", clipPath: "polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)" }}>
-              <DiscordIcon size={13} />O compra por Discord
+            <button onClick={handleDiscordCheckout}
+              className="w-full flex items-center justify-center gap-2.5 py-4 font-extrabold text-white uppercase tracking-wide transition-all text-sm hover:scale-[1.02] active:scale-95"
+              style={{ background: "linear-gradient(135deg, #5865F2 0%, #4752c4 100%)", boxShadow: "0 0 30px rgba(88,101,242,0.4), 0 4px 20px rgba(0,0,0,0.4)", clipPath: "polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)" }}>
+              <DiscordIcon size={16} />
+              Comprar por Discord
             </button>
             <div className="flex items-center justify-center gap-4">
               {[{ icon: <Zap className="h-3 w-3" />, label: "Entrega inmediata" }, { icon: <Shield className="h-3 w-3" />, label: "100% seguro" }].map(({ icon, label }) => (
