@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { X, ShoppingCart, Trash2, Tag, Package, Zap, Shield, Minus, Plus } from "lucide-react";
+import { PayPalButtons } from "@paypal/react-paypal-js";
 import { useCart, itemKey } from "@/context/CartContext";
+import { getApiBase } from "@/lib/api";
 
 const DiscordIcon = ({ size = 16 }: { size?: number }) => (
   <svg width={size} height={size * 0.76} viewBox="0 0 127.14 96.36" fill="currentColor">
@@ -23,6 +25,7 @@ export default function CartDrawer() {
   const [couponInput, setCouponInput] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
   const [couponError, setCouponError] = useState("");
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
 
   if (!open) return null;
 
@@ -179,12 +182,57 @@ export default function CartDrawer() {
                 </div>
               </div>
             </div>
-            <button onClick={handleDiscordCheckout}
-              className="w-full flex items-center justify-center gap-2.5 py-4 font-extrabold text-white uppercase tracking-wide transition-all text-sm hover:scale-[1.02] active:scale-95"
-              style={{ background: "linear-gradient(135deg, #5865F2 0%, #4752c4 100%)", boxShadow: "0 0 30px rgba(88,101,242,0.4), 0 4px 20px rgba(0,0,0,0.4)", clipPath: "polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)" }}>
-              <DiscordIcon size={16} />
-              Comprar por Discord
-            </button>
+            {paymentSuccess ? (
+              <div className="flex flex-col items-center gap-2 py-4 text-center">
+                <div className="text-green-400 text-2xl">✓</div>
+                <p className="text-green-400 font-bold text-sm uppercase tracking-wide">¡Pago exitoso!</p>
+                <p className="text-white/40 text-xs">Recibirás tu producto por Discord pronto.</p>
+              </div>
+            ) : (
+              <>
+                {/* PayPal */}
+                <div className="w-full">
+                  <p className="text-white/30 text-[10px] uppercase tracking-widest text-center mb-2 font-mono">Pagar con PayPal</p>
+                  <PayPalButtons
+                    style={{ layout: "vertical", color: "gold", shape: "rect", label: "pay", height: 45 }}
+                    createOrder={async () => {
+                      const res = await fetch(`${getApiBase()}/paypal/create-order`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          amount: finalTotal,
+                          items: items.map((i) => ({ name: i.name, quantity: i.quantity, price: i.price })),
+                        }),
+                      });
+                      const data = (await res.json()) as { id: string };
+                      return data.id;
+                    }}
+                    onApprove={async (data) => {
+                      await fetch(`${getApiBase()}/paypal/capture-order/${data.orderID}`, { method: "POST" });
+                      setPaymentSuccess(true);
+                      clearCart();
+                      setTimeout(() => { setPaymentSuccess(false); setOpen(false); }, 4000);
+                    }}
+                    onError={() => alert("Error al procesar el pago. Intenta de nuevo.")}
+                  />
+                </div>
+
+                {/* Separador */}
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.07)" }} />
+                  <span className="text-white/20 text-[10px] uppercase tracking-widest font-mono">o</span>
+                  <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.07)" }} />
+                </div>
+
+                {/* Discord */}
+                <button onClick={handleDiscordCheckout}
+                  className="w-full flex items-center justify-center gap-2.5 py-4 font-extrabold text-white uppercase tracking-wide transition-all text-sm hover:scale-[1.02] active:scale-95"
+                  style={{ background: "linear-gradient(135deg, #5865F2 0%, #4752c4 100%)", boxShadow: "0 0 30px rgba(88,101,242,0.4), 0 4px 20px rgba(0,0,0,0.4)", clipPath: "polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)" }}>
+                  <DiscordIcon size={16} />
+                  Comprar por Discord
+                </button>
+              </>
+            )}
             <div className="flex items-center justify-center gap-4">
               {[{ icon: <Zap className="h-3 w-3" />, label: "Entrega inmediata" }, { icon: <Shield className="h-3 w-3" />, label: "100% seguro" }].map(({ icon, label }) => (
                 <div key={label} className="flex items-center gap-1 text-white/25 text-[10px]">{icon}{label}</div>
