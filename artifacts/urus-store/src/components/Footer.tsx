@@ -44,8 +44,13 @@ export default function Footer() {
             La mejor tienda de software premium. Productos indetectables con entrega inmediata y soporte 24/7.
           </p>
           <div className="flex items-center gap-2 mt-4">
-            {[YTIcon, IGIcon, TikTokIcon, DiscordIcon].map((Icon, i) => (
-              <a key={i} href="#" target="_blank" rel="noopener noreferrer"
+            {[
+              { Icon: YTIcon, href: "https://youtube.com/@jaxx_zin" },
+              { Icon: IGIcon, href: "#" },
+              { Icon: TikTokIcon, href: "#" },
+              { Icon: DiscordIcon, href: "https://discord.gg/panelurus" },
+            ].map(({ Icon, href }, i) => (
+              <a key={i} href={href} target="_blank" rel="noopener noreferrer"
                 className="w-9 h-9 flex items-center justify-center text-white/40 hover:text-white transition-all duration-200 hover:scale-110"
                 style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", clipPath: "polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)" }}>
                 <Icon />
