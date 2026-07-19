@@ -18,7 +18,10 @@ async function getAccessToken(): Promise<string> {
     },
     body: "grant_type=client_credentials",
   });
-  if (!res.ok) throw new Error(`PayPal auth failed: ${res.status}`);
+  if (!res.ok) {
+    const txt = await res.text();
+    throw new Error(`PayPal auth failed ${res.status}: ${txt}`);
+  }
   const data = (await res.json()) as { access_token: string };
   return data.access_token;
 }
@@ -31,14 +34,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== "POST") { res.status(405).json({ error: "Method not allowed" }); return; }
 
   try {
-    const { amount, items } = req.body as {
-      amount: number;
-      items: Array<{ name: string; quantity: number; price: number }>;
-    };
+    const { amount } = req.body as { amount: number };
 
-    if (!amount || amount <= 0) { res.status(400).json({ error: "Invalid amount" }); return; }
+    if (!amount || amount <= 0) {
+      res.status(400).json({ error: "Invalid amount" });
+      return;
+    }
 
     const accessToken = await getAccessToken();
+
     const orderRes = await fetch(`${PAYPAL_BASE}/v2/checkout/orders`, {
       method: "POST",
       headers: {
@@ -50,22 +54,24 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         purchase_units: [{
           amount: {
             currency_code: "USD",
-            value: amount.toFixed(2),
-            breakdown: { item_total: { currency_code: "USD", value: amount.toFixed(2) } },
+            // Use exactly 2 decimal places — PayPal rejects more
+            value: Number(amount).toFixed(2),
           },
-          items: items.map((i) => ({
-            name: i.name.slice(0, 127),
-            quantity: String(i.quantity),
-            unit_amount: { currency_code: "USD", value: i.price.toFixed(2) },
-          })),
         }],
       }),
     });
+
+    if (!orderRes.ok) {
+      const txt = await orderRes.text();
+      console.error("PayPal create-order API error:", txt);
+      res.status(500).json({ error: `PayPal error: ${txt}` });
+      return;
+    }
 
     const order = (await orderRes.json()) as { id: string };
     res.json({ id: order.id });
   } catch (err) {
     console.error("PayPal create-order error:", err);
-    res.status(500).json({ error: "Failed to create PayPal order" });
+    res.status(500).json({ error: String(err) });
   }
 }

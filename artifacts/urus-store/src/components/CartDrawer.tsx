@@ -199,12 +199,14 @@ export default function CartDrawer() {
                       const res = await fetch(`${getApiBase()}/paypal/create-order`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                          amount: finalTotal,
-                          items: items.map((i) => ({ name: i.name, quantity: i.quantity, price: i.price })),
-                        }),
+                        body: JSON.stringify({ amount: finalTotal }),
                       });
+                      if (!res.ok) {
+                        const err = await res.json().catch(() => ({ error: res.statusText })) as { error: string };
+                        throw new Error(err.error ?? "create-order failed");
+                      }
                       const data = (await res.json()) as { id: string };
+                      if (!data.id) throw new Error("No order ID returned");
                       return data.id;
                     }}
                     onApprove={async (data) => {
@@ -213,7 +215,10 @@ export default function CartDrawer() {
                       clearCart();
                       setTimeout(() => { setPaymentSuccess(false); setOpen(false); }, 4000);
                     }}
-                    onError={() => alert("Error al procesar el pago. Intenta de nuevo.")}
+                    onError={(err) => {
+                      console.error("PayPal onError:", err);
+                      alert(`Error al procesar el pago: ${String(err)}`);
+                    }}
                   />
                 </div>
 
