@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { X, ShoppingCart, Trash2, Tag, Package, Zap, Shield, Minus, Plus, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
-import { PayPalButtons } from "@paypal/react-paypal-js";
+import { PayPalButtons, FUNDING } from "@paypal/react-paypal-js";
 import { useCart, itemKey } from "@/context/CartContext";
 
 const DiscordIcon = ({ size = 16 }: { size?: number }) => (
@@ -258,6 +258,7 @@ export default function CartDrawer() {
                   <div className="w-full">
                     <p className="text-white/30 text-[10px] uppercase tracking-widest text-center mb-2 font-mono">Pagar con PayPal</p>
                     <PayPalButtons
+                      fundingSource={FUNDING.PAYPAL}
                       style={{ layout: "vertical", color: "gold", shape: "rect", label: "pay", height: 48 }}
                       disabled={payState === "processing"}
                       createOrder={(_data, actions) => {
